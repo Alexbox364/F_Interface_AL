@@ -1,4 +1,4 @@
-# F_Interface_AL
+<img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/b68eba21-1b9b-46f4-80af-f8b788eb2f9d"># F_Interface_AL
 You want to build your own DIY Fanatec base compatible Steering Wheel? You're at the right place :-)
 
 Welcome to the F_interface project. 
@@ -49,4 +49,79 @@ All details about the board can be found in the F_Interface_vM file.
 The Software : 
 The F_interface software was designed based on Darknao and Ishachar previous work. 
 It handles SPI communication with the base to respect the Fanatec data structure.
+
+<img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/c9fc6f53-a6ff-4284-ac24-a52525f89764">
+
+<img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/34862f4f-bf23-4b5c-a13b-1b1f453420c0">
+
+Abbreviations are used on the PCB and in the software to refer to input types :
+
+APM	Advance Paddle Module
+RS	Rotary switch
+BUT	Button group
+ENC 	Encoder
+JOY	Joystick
+DPAD	Group of 5 buttons that make a direction pad – up / down / left / right / center
+<img width="669" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/121464bc-9fe0-424a-9864-cd4b01a13729">
+
+General schematic will help you understand the PCB wiring and link with the code.
+It can be found in the Fritzing file
+
+<img width="557" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/b5dcc4ed-7849-4299-a5e0-010143d4b87b">
+
+#Arduino Nano
+The setup uses a classic arduino nano, original or clone.
+As the wheels run on 3,3v for SPI communication while arduino runs at 5V, some adaptations are necessary like a level shifter and a step up voltage regulator. 
+
+As the base requires a fast response from arduino on SPI communication port at startup, the arduino bootloader has to be removed. Arduino will then be programmed via ICSP port. See this page for further details
+
+#Step up voltage regulator
+<img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/d162fe5a-2789-47ee-a165-1b3ca6de2bbf">
+
+#Level shifter
+<img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/b991780d-8508-4975-99e6-9b70c5600a94">
+
+#Wheel input
+<img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/4f81d53c-a84c-4791-ad2c-9f7ce7c9562b">
+
+#CD74HC4067 multiplexer
+<img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/dd78e55c-3b8b-4550-a36a-a48f128be233">
+
+#Rotary switch
+<img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/044f96f2-f6fa-458f-95fe-2e6345afd759">
+
+#Encoder
+<img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/5123f462-2a70-4c5f-b2bd-42bf7b582a57">
+
+#Button groups
+<img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/2381482e-1d71-4c58-b1c2-bb351b275e74">
+
+#APM
+I advise you used the fantastic design from [Stuyo] (https://diy-sim.com/sim-projects/sim-gear/item/dual-paddle-shifter-clutch-module-v15-
+<img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/4c13e8f3-85af-488d-8983-b5002c5c25f7">
+
+#DPAD
+<img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/fea6c3cf-9f0c-4c01-a6aa-b6d17b89c75d">
+
+#Joystick
+<img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/70b9521a-addf-4633-a44c-272ec2fd1055">
+
+#TM1637
+<img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/397309bb-a431-4c1f-8f61-b7df1ef2dd59">
+
+#OLED display
+<img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/2abdbbab-0ad6-4740-aacf-9b4e0431523c">
+
+
+
+
+
+
+
+
+
+
+
+
+
 
