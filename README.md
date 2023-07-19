@@ -47,6 +47,9 @@ All details about the board can be found in the F_Interface_vM file.
 
 <img width="352" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/f327799d-820b-4bf4-8f58-2bab7216fdd2">
 
+## Dimensions 
+<img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/7790480c-969f-4794-a90d-17e17b044e7c">
+
 ## BOM
 Bill of Material will vary depending on you project but the full list is here :
 - 1 arduino nano (Approx. 3€)
