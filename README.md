@@ -1,3 +1,5 @@
+# F_Interface_AL Project
+
 You want to build your own DIY Fanatec base compatible Steering Wheel? You're at the right place :-)
 
 Welcome to the F_interface project. 
@@ -44,6 +46,19 @@ The F_interface hardware was designed using Fritzing, all source files are avail
 All details about the board can be found in the F_Interface_vM file. 
 
 <img width="352" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/f327799d-820b-4bf4-8f58-2bab7216fdd2">
+
+## BOM
+Bill of Material will vary depending on you project but the full list is here :
+- 1 arduino nano (Approx. 3€)
+- 1 PCB (Approx. 10€ if ordered by 5 on JLCPCB)
+- 1 CD74HC4067 - 16 channel multiplexer (Approx. 0,5€)
+- 1 Step up voltage regulator (Approx. 2€)
+- 1 Level shifter (Approx 2€)
+- Depending on you build, some buttons, encoder, rotary switches,…
+- Some 2,54 and 2mm pitch, straight or elbowed pin arrays to hook up your buttons, switches,…
+- Up to 4x 100 Ohms Resistors for Rotary switches
+- Up to 26x 10k Ohms Resitors for buttons
+- Up to 8x 10 or 47 nF Capacitors for inputs debounce
 
 # The Software
 The F_interface software was designed based on Darknao and Ishachar previous work. 
