@@ -23,7 +23,7 @@ This project brings you both a hardware and software platform to help you build 
 
 It is build on using the SPI protocol from Fanatec to communicate between the wheel and the base. This way, you don’t need any cable or wireless communication between the wheel and the base, everything goes through the pins in the center of the Fanatec QR system.
 
-This work is based on previous work from [Darknao](https://www.genome.gov/](https://github.com/darknao/btClubSportWheel) and [Ishachar](https://github.com/lshachar/Arduino_Fanatec_Wheel) who brought public the base of the SPI communication between the Fanatec base and the wheels.
+This work is based on previous work from [Darknao](https://github.com/darknao/btClubSportWheel) and [Ishachar](https://github.com/lshachar/Arduino_Fanatec_Wheel) who brought public the base of the SPI communication between the Fanatec base and the wheels.
 
 
 
