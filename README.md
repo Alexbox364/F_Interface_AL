@@ -1,4 +1,4 @@
-# F_Interface_AL Project
+# F_Interface_AL Project v0.02
 
 You want to build your own DIY Fanatec base compatible Steering Wheel? You're at the right place :-)
 
@@ -18,6 +18,7 @@ The F_interface offers you the opportunity to build a custom DIY wheel with a va
 - Advance paddle modules
 - TM1637 segmented displays
 - OLED displays
+- TFT LCD display
 - Individually addressable RGB LEDs
 
 This project brings you both a hardware and software platform to help you build your dream DIY wheel. 
