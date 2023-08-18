@@ -6,6 +6,9 @@ Welcome to the F_interface project.
 
 Purpose of this project is to bring a versatile platform to build DIY steering wheels intended to work with Fanatic simracing bases. 
 
+![image](https://github.com/Alexbox364/F_Interface_AL/assets/17022734/05ad3eea-12d0-4a2f-92bb-38c1958d1449)
+
+
 Fanatec ecosystem is great for simracing, but when it comes to integrate custom DIY wheel to enrich your experience, possibilities are limited. 
 
 You can use the Podium hub to hook up a rim and few buttons but you don’t have much more possibilities. 
