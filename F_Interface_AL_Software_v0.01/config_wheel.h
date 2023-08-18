@@ -10,7 +10,7 @@
 */
 
 
-#define BUTTON_DEBUG 0          // Displays live button output on Serial port for debug purposes
+#define BUTTON_DEBUG 1          // Displays live button output on Serial port for debug purposes
 #define ANALOG_SAMPLES 3        // Number of analog smaple to average for each reading. 
 #define DEBOUNCE_DELAY 50       // Debounce delay - minimum delay between 2 button presses
 
@@ -23,25 +23,26 @@
 //#define HAS_BUTTON_GROUP_3      // Activates button group 3 - buttons number 9, 10, 11 and 12 on PCB
 //#define HAS_BUTTON_GROUP_4      // Activates button group 4 - buttons number 13, 14, 15 and 16 on PCB
 
-//#define HAS_DPAD                // Activates D-PAD that has 5 buttons up/down/left/right/center
-#define HAS_RS_1                // Activates rotary switch 1 + buttonbits assignment
+//#define HAS_DPAD                // Activated Dpad buttons
+
+//#define HAS_RS_1                // Activates rotary switch 1 + buttonbits assignment
 //#define HAS_RS_2                // Activates rotary switch 1 + buttonbits assignment
 //#define HAS_RS_3                // Activates rotary switch 1 + buttonbits assignment
 //#define HAS_RS_4                // Activates rotary switch 1 + buttonbits assignment
 
 //#define HAS_APM_L               // Activates advance paddle module left
 //#define HAS_APM_R               // Activates advance paddle module RIGHT
-//#define HAS_JOYSTICK            // Activates Joystick
+//#define HAS_JOY                 // Activates Joystick
 
-#define HAS_ENC_1               // Activates Encoder 1 + buttonbits assignment
+//#define HAS_ENC_1               // Activates Encoder 1 + buttonbits assignment
 //#define HAS_ENC_2               // Activates Encoder 2 + buttonbits assignment
 
 //#define HAS_NPX                 // Activates Neopixels
 //#define HAS_TM1637              // Activates TM1637 7 segments display
 //#define HAS_OLED                // Activates OLED Display
+//#define HAS_TFT                 // Activates LCD TFT Display // Not coded yet. 
 
 // SEE BELOW FOR FURTHER CONFIGURATION OPTIONS FOR EACH INPUT
-
 
 
 
@@ -192,15 +193,33 @@ Some button bits à reserved in Fanatec SPI communicaiton protocol, here are adv
 
 //////////////////////////////////
 // NEOPIXELS LEDS
-#define NPX_NUMBER  1     // Number of LEDs hooked up to the board
+#define NPX_NUMBER  9     // Number of LEDs hooked up to the board
+#ifdef HAS_NPX
+  #include <Adafruit_NeoPixel.h>
+#endif
 
 //////////////////////////////////
 // TM1637 display
 #define SEGMENTS_NUMBER  3     // Number of 7 segments of the display
+#ifdef HAS_TM1637
+  #include <TM1637Display.h>
+#endif
+
 
 //////////////////////////////////
 // OLED display
 #define OLED_TYPE  1     // Type of OLED display hooked up to the board.
+#ifdef HAS_OLED
+    #include <SPI.h>
+    #include <Wire.h>
+    #include <Adafruit_GFX.h>
+    #include <Adafruit_SSD1306.h>
+    
+    #define SCREEN_WIDTH 128 // OLED display width, in pixels
+    #define SCREEN_HEIGHT 64 // OLED display height, in pixels
+    #define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
+    #define SCREEN_ADDRESS 0x3D ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
+#endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //          THRESHOLDS                                                                              //

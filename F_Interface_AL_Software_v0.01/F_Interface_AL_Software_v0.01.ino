@@ -1,9 +1,26 @@
+
+/*  F_interface _AL
+ *   
+ *   
+ *  This code is inspired by previous work done by Darknao and Ishachar
+ * 
+ * v0.01 :
+ *  - initial development implementing all sensors and displays, tested with hardware version v0.01
+ *  - 
+ * 
+ * 
+ * TO DO :
+ * - test all sensors and actuators and debug
+ * - 
+ */
+
+
+
 #include "pins_arduino.h" 
 #include "F_interface_AL.h" 
 #include "pins.h" 
 #include "config_wheel.h" 
 #include <avr/pgmspace.h>
-
 
 #define dataLength 33
 #define PRINTBIN(Num) for (uint32_t t = (1UL << (sizeof(Num) * 8) - 1); t; t >>= 1) //Serial.write(Num& t ? '1' : '0'); // Prints a binary number with leading zeros (Automatic Handling)
@@ -24,6 +41,11 @@ void calcOutgoingCrc();
 bool checkIncomingCrc();
 ISR(SPI_STC_vect);           // SPI interrupt routine
 uint8_t crc8(const uint8_t* buf, uint8_t length);     // return CRC8 from buf
+
+void update_rev_LEDS();               // Get data received from the base about the 9 rev LEDS, parse them and displays them.
+void update_7_segments();             // Get data received from the base about the 3x 7 segments displays, parse them and displays them.
+void update_OLED();                   // Get data received from the base about the display information, parse, process them and displays them on the OLED
+void play_init_rev_LEDs();            // Plays initialization animation
 
 void buttonBit_buffer_handling();     // handling of button presses buffer, mostly required by impulsion based interfaces like encoders & rotary switches
 unsigned long lastButtonPress;
@@ -55,7 +77,6 @@ void inputs_management();             // handles button presses, rotary switches
     unsigned long buffer_timer;
     int buffer_index = -1;
     bool flag_buffer = LOW;
-    uint8_t buttonsBits[] = {1,  2,  3,  4,  5, 6, 7, 8, 9,  10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};   // what bits do you want each button to affect? use the last comment in this file as reference.
     int buttonBits_buffer[24] =      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};       // Button press buffer handling
                 
 void test_output();   // test inputs of the wheel
@@ -74,6 +95,19 @@ unsigned long delayMillis = 400; // wait at least the delay time since last spi 
 /*uint8_t returnData[dataLength] = { 0xA5, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
           0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
           0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xfc };*/
+
+
+#ifdef HAS_TM1637
+    TM1637Display display(TM1637_CLK_PIN, TM1637_DIO_PIN);
+#endif
+
+#ifdef HAS_NPX
+    Adafruit_NeoPixel strip(NPX_NUMBER, NPX_PIN, NEO_GRB + NEO_KHZ800);
+#endif
+
+#ifdef HAS_OLED
+    Adafruit_SSD1306 display2(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+#endif
 
 void setup()
 {
@@ -107,8 +141,28 @@ void setup()
     SPCR |= _BV(SPIE);    // turn on interrupts
     SPCR |= _BV(CPHA);    //turns on CPHA. as I found the CSW wheelbase to use it, with logic scope.
   
-    Serial.begin(500000);
+    Serial.begin(115200);
     Serial.println("F_Interface_AL");
+
+    #ifdef HAS_NPX
+      strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
+      strip.show();            // Turn OFF all pixels ASAP
+      strip.setBrightness(255); // Set BRIGHTNESS to about 1/5 (max = 255)
+
+      play_init_rev_LEDs();   // Plays initialization animation
+    #endif 
+
+    #ifdef HAS_OLED
+      // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
+      if(!display2.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+        Serial.println(F("SSD1306 allocation failed"));
+        for(;;); // Don't proceed, loop forever
+      }
+      display2.display();
+      display2.setTextSize(1);              // Normal 1:1 pixel scale
+      display2.setTextColor(SSD1306_WHITE); // Draw white text
+        
+    #endif
 }
 
 void loop() {
@@ -116,14 +170,23 @@ void loop() {
     calcOutgoingCrc();
     bool crc8Stat = checkIncomingCrc();
 
-    //printmosibuf();
-    //printmisobuf();
+    printmosibuf();
+    printmisobuf();
 
     inputs_management();    // handles button presses, rotary switches,....
     //test_output();
     buttonBit_buffer_handling();   
 
-    serialOutput();          // Prints I/O state to Serial Output
+
+    #ifdef HAS_TM1637
+        update_7_segments();
+    #endif
+
+    #ifdef HAS_NPX
+        update_rev_LEDS();
+    #endif
+
+    //serialOutput();          // Prints I/O state to Serial Output
     
 }
 
@@ -713,15 +776,14 @@ void inputs_management() {
         // APM Left - read analog values and determine which button is pressed according to the analog value 
         #ifdef HAS_APM_L
         data_out.axisX = map(read_CD74HC4067(APM_L_ANALOG_PIN), 0, 1023, 0, 255);
-        
         val = read_CD74HC4067(APM_L_BUT_PIN);
         if      (val < APM_THRESHOLD_1) {
-            buttonBitChange(APM_L_PD_BUTTON_BIT, true);             // Button Paddle up pressed  
-            if (BUTTON_DEBUG ==1) Serial.println("Paddle Left Up");
+            buttonBitChange(APM_L_PD_BUTTON_BIT, true);             // Button Paddle Down pressed  
+            if (BUTTON_DEBUG ==1) Serial.println("Paddle Left Down");
         }
         else if (val < APM_THRESHOLD_2) {
-            buttonBitChange(APM_L_PU_BUTTON_BIT, true);             // Button Paddle Down pressed
-            if (BUTTON_DEBUG ==1) Serial.println("Paddle Left Down");
+            buttonBitChange(APM_L_PU_BUTTON_BIT, true);             // Button Paddle Up pressed
+            if (BUTTON_DEBUG ==1) Serial.println("Paddle Left UP");
         }
         else {                                                      // No button pressed
             buttonBitChange(APM_L_PU_BUTTON_BIT, false);
@@ -733,15 +795,14 @@ void inputs_management() {
         // APM right - read analog values and determine which button is pressed according to the analog value 
         #ifdef HAS_APM_R
         data_out.axisY = map(read_CD74HC4067(APM_R_ANALOG_PIN), 0, 1023, 0, 255);
-        
         val = read_CD74HC4067(APM_R_BUT_PIN);
         if      (val < APM_THRESHOLD_1)  {
-            buttonBitChange(APM_R_PD_BUTTON_BIT, true);             // Button Paddle up pressed  
-            if (BUTTON_DEBUG ==1) Serial.println("Paddle Right Up");
+            buttonBitChange(APM_R_PD_BUTTON_BIT, true);             // Button Paddle Down pressed  
+            if (BUTTON_DEBUG ==1) Serial.println("Paddle Right Down");
         }
         else if (val < APM_THRESHOLD_2)  {
-            buttonBitChange(APM_R_PU_BUTTON_BIT, true);             // Button Paddle Down pressed
-            if (BUTTON_DEBUG ==1) Serial.println("Paddle Right Down");
+            buttonBitChange(APM_R_PU_BUTTON_BIT, true);             // Button Paddle Up pressed
+            if (BUTTON_DEBUG ==1) Serial.println("Paddle Right Up");
         }
         else {                                                      // No button pressed
             buttonBitChange(APM_R_PU_BUTTON_BIT, false);
@@ -824,7 +885,7 @@ void inputs_management() {
 
     ////////////////////////////////////////////////////////
     // handle Joystick
-        #ifdef HAS_JOY
+        #ifdef HAS_JOYSTICK
         data_out.axisX = map(read_CD74HC4067(JOY_X_PIN), 0, 1023, 0, 255);          // Handles axis X of Joystick
         data_out.axisY = map(read_CD74HC4067(JOY_Y_PIN), 0, 1023, 0, 255);          // Handles axis Y of Joystick
         if (read_CD74HC4067(JOY_BUT_PIN) < 500) {                                   // Handles Joystick button
@@ -856,3 +917,160 @@ void buttonBit_buffer_handling() {
         }
     }
 }
+////////////////////////////////////////////////////////
+// GEt data received from the base about the 9 rev LEDS, parse them and displays them.
+void update_rev_LEDS() {
+    #ifdef HAS_NPX
+
+        bool led1 = bitRead(data_in.leds,0);
+        bool led2 = bitRead(data_in.leds,1);
+        bool led3 = bitRead(data_in.leds,2);
+        bool led4 = bitRead(data_in.leds,3);
+        bool led5 = bitRead(data_in.leds,4);
+        bool led6 = bitRead(data_in.leds,5);
+        bool led7 = bitRead(data_in.leds,6);
+        bool led8 = bitRead(data_in.leds,7);
+        bool led9 = bitRead(data_in.leds,8);
+
+        // LED 1
+        if (led1) { strip.setPixelColor(0, strip.Color(0, 0, 255));}
+        else {      strip.setPixelColor(0, strip.Color(0, 0, 0));}
+
+        // LED 2
+        if (led2) { strip.setPixelColor(1, strip.Color(0, 0, 255));}
+        else {      strip.setPixelColor(1, strip.Color(0, 0, 0));}
+
+        // LED 3
+        if (led3) { strip.setPixelColor(2, strip.Color(0, 0, 255));}
+        else {      strip.setPixelColor(2, strip.Color(0, 0, 0));}
+
+        // LED 4
+        if (led4) { strip.setPixelColor(3, strip.Color(0, 255, 0));}
+        else {      strip.setPixelColor(3, strip.Color(0, 0, 0));}
+
+        // LED 5
+        if (led5) { strip.setPixelColor(4, strip.Color(0, 255, 0));}
+        else {      strip.setPixelColor(4, strip.Color(0, 0, 0));}
+
+        // LED 6
+        if (led6) { strip.setPixelColor(5, strip.Color(0, 255, 0));}
+        else {      strip.setPixelColor(5, strip.Color(0, 0, 0));}
+
+        // LED 7
+        if (led7) { strip.setPixelColor(6, strip.Color(255, 255, 0));}
+        else {      strip.setPixelColor(6, strip.Color(0, 0, 0));}
+
+        // LED 8
+        if (led8) { strip.setPixelColor(7, strip.Color(255, 255, 0));}
+        else {      strip.setPixelColor(7, strip.Color(0, 0, 0));}
+
+        // LED 9
+        if (led9) { strip.setPixelColor(8, strip.Color(255, 0, 0));}
+        else {      strip.setPixelColor(8, strip.Color(0, 0, 0));}
+                
+        strip.show();
+     
+        /*Serial.print("LEDs : ");
+        Serial.print(led1);
+        Serial.print(" / ");
+        Serial.print(led2);
+        Serial.print(" / ");
+        Serial.print(led3);
+        Serial.print(" / ");
+        Serial.print(led4);
+        Serial.print(" / ");
+        Serial.print(led5);
+        Serial.print(" / ");
+        Serial.print(led6);
+        Serial.print(" / ");
+        Serial.print(led7);
+        Serial.print(" / ");
+        Serial.print(led8);
+        Serial.print(" / ");
+        Serial.println(led9);*/
+    
+    #endif
+    // Custom code to display LEDS to write by you
+    // Individual LEDS status is accessible via led1 to led 9 booleans
+}
+
+////////////////////////////////////////////////////////
+// GEt data received from the base about the 3 7 segments displays, parse them and displays them.
+void update_7_segments() {
+    
+    #ifdef HAS_TM1637
+        
+        display.setSegments(data_in.disp[0], data_in.disp[1], data_in.disp[2]);
+
+        //_ASCII_table[] lookup table converts 7 segment bytes to the corresponding ASCII character.
+        Serial.print("Segments : ");
+        Serial.print(_7_to_ASCII_table[data_in.disp[0]]);
+        Serial.print(" / ");
+        Serial.print(_7_to_ASCII_table[data_in.disp[1]]);
+        Serial.print(" / ");
+        Serial.println(_7_to_ASCII_table[data_in.disp[2]]);
+    
+        // Custom code to display segmments to write by you
+        // Individual segment ASCII character is accessible via _7_to_ASCII_table[data_in.disp[0]] to _7_to_ASCII_table[data_in.disp[2]]
+    #endif
+}
+
+////////////////////////////////////////////////////////
+// GEt data received from the base about the display information, parse, process them and displays them on the OLED
+void update_OLED() {
+    
+    #ifdef HAS_OLED
+        
+        display2.clearDisplay();              // Clear display
+
+        display2.setCursor(0, 0);             // Start at top-left corner
+        display2.cp437(true);                 // Use full 256 char 'Code Page 437' font
+
+        // Display the 3 characters coming from the base, converted from 7 segments data to ASCII indexed character
+        display2.write(_7_to_ASCII_table[data_in.disp[0]]);
+        display2.write(_7_to_ASCII_table[data_in.disp[1]]);
+        display2.write(_7_to_ASCII_table[data_in.disp[2]]);
+        
+        display2.display();
+        
+        //_ASCII_table[] lookup table converts 7 segment bytes to the corresponding ASCII character.
+        Serial.print("OLED : ");
+        Serial.print(_7_to_ASCII_table[data_in.disp[0]]);
+        Serial.print(" / ");
+        Serial.print(_7_to_ASCII_table[data_in.disp[1]]);
+        Serial.print(" / ");
+        Serial.println(_7_to_ASCII_table[data_in.disp[2]]);
+    
+        // Custom code to display segmments to write by you
+        // Individual segment ASCII character is accessible via _7_to_ASCII_table[data_in.disp[0]] to _7_to_ASCII_table[data_in.disp[2]]
+    #endif
+}
+
+////////////////////////////////////////////////////////
+// Plays initialization animation
+void play_init_rev_LEDs() {
+    #ifdef HAS_NPX
+        // Rainbow cycle along whole strip. Pass delay time (in ms) between frames.
+        // Hue of first pixel runs 5 complete loops through the color wheel.
+        // Color wheel has a range of 65536 but it's OK if we roll over, so
+        // just count from 0 to 5*65536. Adding 256 to firstPixelHue each time
+        // means we'll make 5*65536/256 = 1280 passes through this loop:
+        unsigned long tempo = millis();
+       //for(long firstPixelHue = 0; firstPixelHue < 5*65536; firstPixelHue += 256) {
+        for(long firstPixelHue = 0; firstPixelHue < 1*65536; firstPixelHue += 256) {
+          if (millis() - tempo > 10) {
+              tempo = millis();
+              // strip.rainbow() can take a single argument (first pixel hue) or
+              // optionally a few extras: number of rainbow repetitions (default 1),
+              // saturation and value (brightness) (both 0-255, similar to the
+              // ColorHSV() function, default 255), and a true/false flag for whether
+              // to apply gamma correction to provide 'truer' colors (default true).
+              strip.rainbow(firstPixelHue);
+              // Above line is equivalent to:
+              // strip.rainbow(firstPixelHue, 1, 255, 255, true);
+              strip.show(); // Update strip with new contents
+          }
+        }
+    #endif
+}
+         

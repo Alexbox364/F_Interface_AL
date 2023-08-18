@@ -8,6 +8,8 @@
 #define INT_CS_SPI          2
 #define MUX_S0_PIN          3
 #define MUX_S1_PIN          4
+#define ENC_2_A_PIN         5
+#define ENC_2_B_PIN         6
 #define MUX_S2_PIN          7
 #define MUX_S3_PIN          8
 #define NPX_PIN             9
@@ -22,8 +24,7 @@
 #define MUX_SIG_PIN         A1
 #define ENC_1_A_PIN         A3
 #define ENC_1_B_PIN         A2
-#define ENC_2_A_PIN         A7
-#define ENC_2_B_PIN         A6
+
 
 
 // CD74HC4067 pinout
