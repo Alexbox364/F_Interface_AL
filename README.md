@@ -95,7 +95,7 @@ It can be found in the Fritzing file
 The setup uses a classic arduino nano, original or clone.
 As the wheels run on 3,3v for SPI communication while arduino runs at 5V, some adaptations are necessary like a level shifter and a step up voltage regulator. 
 
-As the base requires a fast response from arduino on SPI communication port at startup, the arduino bootloader has to be removed. Arduino will then be programmed via ICSP port. See this page for further details :[Burn bootloader](https://docs.arduino.cc/built-in-examples/arduino-isp/ArduinoISP)
+As the base requires a fast response from arduino on SPI communication port at startup, the arduino bootloader has to be removed. Arduino will then be programmed via ICSP port. See this page for further details : [Arduino as ISP](https://docs.arduino.cc/built-in-examples/arduino-isp/ArduinoISP)
 
 ## Step up voltage regulator
 <img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/d162fe5a-2789-47ee-a165-1b3ca6de2bbf">
