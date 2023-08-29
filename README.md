@@ -4,7 +4,7 @@ You want to build your own DIY Fanatec base compatible Steering Wheel? You're at
 
 Welcome to the F_interface project. 
 
-Purpose of this project is to bring a versatile platform to build DIY steering wheels intended to work with Fanatic simracing bases. 
+Purpose of this project is to bring a versatile platform to build DIY steering wheels intended to work with Fanatec simracing bases. 
 
 ![image](https://github.com/Alexbox364/F_Interface_AL/assets/17022734/05ad3eea-12d0-4a2f-92bb-38c1958d1449)
 
