@@ -1000,7 +1000,7 @@ void update_7_segments() {
     
     #ifdef HAS_TM1637
         
-        display.setSegments(data_in.disp[0], data_in.disp[1], data_in.disp[2]);
+        display.setSegments({data_in.disp[0], data_in.disp[1], data_in.disp[2]}, 3, 0);
 
         //_ASCII_table[] lookup table converts 7 segment bytes to the corresponding ASCII character.
         Serial.print("Segments : ");
