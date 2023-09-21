@@ -51,6 +51,13 @@ All details about the board can be found in the F_Interface_vM file.
 
 <img width="352" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/f327799d-820b-4bf4-8f58-2bab7216fdd2">
 
+Example of assembled PCB
+![AUDI_DTM_AL1](https://github.com/Alexbox364/F_Interface_AL/assets/17022734/e70b61e8-7912-476e-8376-082202e174dc)
+
+Example of integration in a DIY steering wheel
+![Uploading AUDI_DTM_AL6.jpeg…]()
+
+
 ## Dimensions 
 <img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/7790480c-969f-4794-a90d-17e17b044e7c">
 
