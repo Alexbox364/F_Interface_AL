@@ -18,27 +18,29 @@
 //      GENERAL CONFIGURATION                                                                       //
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//#define HAS_BUTTON_GROUP_1      // Activates button group 1 - buttons number 1, 2, 3 and 4 on PCB
-//#define HAS_BUTTON_GROUP_2      // Activates button group 2 - buttons number 5, 6, 7 and 8 on PCB
+#define HAS_BUTTON_GROUP_1      // Activates button group 1 - buttons number 1, 2, 3 and 4 on PCB
+#define HAS_BUTTON_GROUP_2      // Activates button group 2 - buttons number 5, 6, 7 and 8 on PCB
 //#define HAS_BUTTON_GROUP_3      // Activates button group 3 - buttons number 9, 10, 11 and 12 on PCB
-//#define HAS_BUTTON_GROUP_4      // Activates button group 4 - buttons number 13, 14, 15 and 16 on PCB
+#define HAS_BUTTON_GROUP_4      // Activates button group 4 - buttons number 13, 14, 15 and 16 on PCB
 
 //#define HAS_DPAD                // Activated Dpad buttons
+#define HAS_FUNKY                // Activated FUNKY switch buttons - center press not functionnal
 
 //#define HAS_RS_1                // Activates rotary switch 1 + buttonbits assignment
-//#define HAS_RS_2                // Activates rotary switch 1 + buttonbits assignment
-//#define HAS_RS_3                // Activates rotary switch 1 + buttonbits assignment
-//#define HAS_RS_4                // Activates rotary switch 1 + buttonbits assignment
+#define HAS_RS_2                // Activates rotary switch 1 + buttonbits assignment
+#define HAS_RS_3                // Activates rotary switch 1 + buttonbits assignment
+#define HAS_RS_4                // Activates rotary switch 1 + buttonbits assignment
 
-//#define HAS_APM_L               // Activates advance paddle module left
-//#define HAS_APM_R               // Activates advance paddle module RIGHT
+#define HAS_APM_L               // Activates advance paddle module left
+#define HAS_APM_R               // Activates advance paddle module RIGHT
 //#define HAS_JOY                 // Activates Joystick
 
-//#define HAS_ENC_1               // Activates Encoder 1 + buttonbits assignment
-//#define HAS_ENC_2               // Activates Encoder 2 + buttonbits assignment
+#define HAS_ENC_1               // Activates Encoder 1 + buttonbits assignment
+#define HAS_ENC_2               // Activates Encoder 2 + buttonbits assignment
+#define HAS_ENC_3               // Activates Encoder 3 + buttonbits assignment
 
-//#define HAS_NPX                 // Activates Neopixels
-//#define HAS_TM1637              // Activates TM1637 7 segments display
+//define HAS_NPX                 // Activates Neopixels
+//define HAS_TM1637              // Activates TM1637 7 segments display
 //#define HAS_OLED                // Activates OLED Display
 //#define HAS_TFT                 // Activates LCD TFT Display // Not coded yet. 
 
@@ -59,10 +61,10 @@ Some button bits à reserved in Fanatec SPI communicaiton protocol, here are adv
 7   FREE - Button 6
 8   FREE - Button 4
 9   Right Paddle
-10  FREE - Button 2      
+10  FREE - Button 2   - Paddle up   
 11  FREE - Button 8      
 12  Left paddle
-13  FREE - Button 1      
+13  FREE - Button 1    - Paddle up  
 14  FREE - Button 5      
 15  FREE - Button 9      (3 buttons in triangle, left)
 16  FREE - Button 10     (3 buttons in triangle, right)
@@ -72,6 +74,7 @@ Some button bits à reserved in Fanatec SPI communicaiton protocol, here are adv
 20  FREE - Button 7
 21  FREE - Button 27 in contentmanager
 22  Menu button. Button 28 in contentmanager. Does not show up in fanatec's driver)
+23
 24  Used to store encoder LESS here
 */
 
@@ -82,16 +85,16 @@ Some button bits à reserved in Fanatec SPI communicaiton protocol, here are adv
 //////////////////////////////////
 // BUTTON GROUP 1
 #define BUTTON_1_BUTTON_BIT  5     // Button Bit assigned to button 1 on PCB
-#define BUTTON_2_BUTTON_BIT  5     // Button Bit assigned to button 2 on PCB
-#define BUTTON_3_BUTTON_BIT  5     // Button Bit assigned to button 3 on PCB
-#define BUTTON_4_BUTTON_BIT  5     // Button Bit assigned to button 4 on PCB
+#define BUTTON_2_BUTTON_BIT  6     // Button Bit assigned to button 2 on PCB
+#define BUTTON_3_BUTTON_BIT  7     // Button Bit assigned to button 3 on PCB
+#define BUTTON_4_BUTTON_BIT  8     // Button Bit assigned to button 4 on PCB
 
 //////////////////////////////////
 // BUTTON GROUP 2
-#define BUTTON_5_BUTTON_BIT  5     // Button Bit assigned to button 5 on PCB
-#define BUTTON_6_BUTTON_BIT  5     // Button Bit assigned to button 6 on PCB
-#define BUTTON_7_BUTTON_BIT  5     // Button Bit assigned to button 7 on PCB
-#define BUTTON_8_BUTTON_BIT  5     // Button Bit assigned to button 8 on PCB
+#define BUTTON_5_BUTTON_BIT  18     // Button Bit assigned to button 5 on PCB
+#define BUTTON_6_BUTTON_BIT  11     // Button Bit assigned to button 6 on PCB
+#define BUTTON_7_BUTTON_BIT  14     // Button Bit assigned to button 7 on PCB
+#define BUTTON_8_BUTTON_BIT  15     // Button Bit assigned to button 8 on PCB
 
 //////////////////////////////////
 // BUTTON GROUP 3
@@ -102,10 +105,10 @@ Some button bits à reserved in Fanatec SPI communicaiton protocol, here are adv
 
 //////////////////////////////////
 // BUTTON GROUP 4
-#define BUTTON_13_BUTTON_BIT  5     // Button Bit assigned to button 13 on PCB
-#define BUTTON_14_BUTTON_BIT  5     // Button Bit assigned to button 14 on PCB
-#define BUTTON_15_BUTTON_BIT  5     // Button Bit assigned to button 15 on PCB
-#define BUTTON_16_BUTTON_BIT  5     // Button Bit assigned to button 16 on PCB
+#define BUTTON_13_BUTTON_BIT  22     // Button Bit assigned to button 13 on PCB
+#define BUTTON_14_BUTTON_BIT  -1     // Button Bit assigned to button 14 on PCB
+#define BUTTON_15_BUTTON_BIT  -1     // Button Bit assigned to button 15 on PCB
+#define BUTTON_16_BUTTON_BIT  -1     // Button Bit assigned to button 16 on PCB
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //        D-PAD                                                                                     //
@@ -113,11 +116,18 @@ Some button bits à reserved in Fanatec SPI communicaiton protocol, here are adv
 
 //////////////////////////////////
 // D-PAD
-#define DPAD_L_BUTTON_BIT  2     // Button Bit assigned to D-Pad left button on PCB
-#define DPAD_R_BUTTON_BIT  3     // Button Bit assigned to D-Pad right button on PCB
-#define DPAD_U_BUTTON_BIT  1     // Button Bit assigned to D-Pad up button on PCB
-#define DPAD_D_BUTTON_BIT  4     // Button Bit assigned to D-Pad down button on PCB
-#define DPAD_C_BUTTON_BIT  18     // Button Bit assigned to D-Pad center button on PCB
+#define DPAD_L_BUTTON_BIT 1      // Button Bit assigned to D-Pad left button on PCB
+#define DPAD_R_BUTTON_BIT 4      // Button Bit assigned to D-Pad right button on PCB
+#define DPAD_U_BUTTON_BIT 3      // Button Bit assigned to D-Pad up button on PCB
+#define DPAD_D_BUTTON_BIT 2      // Button Bit assigned to D-Pad down button on PCB
+#define DPAD_C_BUTTON_BIT   18     // Button Bit assigned to D-Pad center button on PCB
+
+//////////////////////////////////
+// Funky switch
+#define FUNKY_L_BUTTON_BIT 2      // Button Bit assigned to FUNKY left button on PCB
+#define FUNKY_R_BUTTON_BIT 3      // Button Bit assigned to FUNKY right button on PCB
+#define FUNKY_U_BUTTON_BIT 1      // Button Bit assigned to FUNKY up button on PCB
+#define FUNKY_D_BUTTON_BIT 4      // Button Bit assigned to FUNKY down button on PCB
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //        ROTARY SWITCHES                                                                           //
@@ -125,27 +135,27 @@ Some button bits à reserved in Fanatec SPI communicaiton protocol, here are adv
 
 //////////////////////////////////
 // ROTARY SWITCH 1
-#define RS_1_PLUS_BUTTON_BIT  1     // Button Bit which is triggered when rotary switch 1 is turned clockwise
-#define RS_1_LESS_BUTTON_BIT  2     // Button Bit which is triggered when rotary switch 1 is turned counter-clockwise
-#define RS_1_STEPS_NUMBER     12     // number of steps of RS_1
+#define RS_1_PLUS_BUTTON_BIT  -1    // Button Bit which is triggered when rotary switch 1 is turned clockwise
+#define RS_1_LESS_BUTTON_BIT  -1    // Button Bit which is triggered when rotary switch 1 is turned counter-clockwise
+#define RS_1_STEPS_NUMBER     8     // number of steps of RS_1
 
 //////////////////////////////////
 // ROTARY SWITCH 2
-#define RS_2_PLUS_BUTTON_BIT  5     // Button Bit which is triggered when rotary switch 2 is turned clockwise
-#define RS_2_LESS_BUTTON_BIT  6     // Button Bit which is triggered when rotary switch 2 is turned counter-clockwise
-#define RS_2_STEPS_NUMBER     12     // number of steps of RS_2 
+#define RS_2_PLUS_BUTTON_BIT  21    // Button Bit which is triggered when rotary switch 2 is turned clockwise
+#define RS_2_LESS_BUTTON_BIT  23    // Button Bit which is triggered when rotary switch 2 is turned counter-clockwise
+#define RS_2_STEPS_NUMBER     8     // number of steps of RS_2 
 
 //////////////////////////////////
 // ROTARY SWITCH 3
-#define RS_3_PLUS_BUTTON_BIT  5     // Button Bit which is triggered when rotary switch 3 is turned clockwise
-#define RS_3_LESS_BUTTON_BIT  6     // Button Bit which is triggered when rotary switch 4 is turned counter-clockwise
-#define RS_3_STEPS_NUMBER     12     // number of steps of RS_3 
+#define RS_3_PLUS_BUTTON_BIT  19    // Button Bit which is triggered when rotary switch 3 is turned clockwise
+#define RS_3_LESS_BUTTON_BIT  20    // Button Bit which is triggered when rotary switch 4 is turned counter-clockwise
+#define RS_3_STEPS_NUMBER     8     // number of steps of RS_3 
 
 //////////////////////////////////
 // ROTARY SWITCH 4
-#define RS_4_PLUS_BUTTON_BIT  5     // Button Bit which is triggered when rotary switch 4 is turned clockwise
-#define RS_4_LESS_BUTTON_BIT  6     // Button Bit which is triggered when rotary switch 4 is turned counter-clockwise
-#define RS_4_STEPS_NUMBER     12     // number of steps of RS_4 
+#define RS_4_PLUS_BUTTON_BIT  16    // Button Bit which is triggered when rotary switch 4 is turned clockwise
+#define RS_4_LESS_BUTTON_BIT  17    // Button Bit which is triggered when rotary switch 4 is turned counter-clockwise
+#define RS_4_STEPS_NUMBER     8     // number of steps of RS_4 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //    ADVANCE PADDLE MODULES                                                                        //
@@ -179,13 +189,18 @@ Some button bits à reserved in Fanatec SPI communicaiton protocol, here are adv
 
 //////////////////////////////////
 // Left encoder : encoder_1
-#define ENC_1_PLUS_BUTTON_BIT  23     // Button Bit which is triggered when encoder 1 is turned clockwise
-#define ENC_1_LESS_BUTTON_BIT  2     // Button Bit which is triggered when encoder 1 is turned counter-clockwise
+#define ENC_1_PLUS_BUTTON_BIT  1     // Button Bit which is triggered when encoder 1 is turned clockwise
+#define ENC_1_LESS_BUTTON_BIT  4     // Button Bit which is triggered when encoder 1 is turned counter-clockwise
 
 //////////////////////////////////
 // Right encoder : encoder_2
-#define ENC_2_PLUS_BUTTON_BIT  23     // Button Bit which is triggered when encoder 2 is turned clockwise
-#define ENC_2_LESS_BUTTON_BIT  24     // Button Bit which is triggered when encoder 2 is turned counter-clockwise
+#define ENC_2_PLUS_BUTTON_BIT  3     // Button Bit which is triggered when encoder 2 is turned clockwise
+#define ENC_2_LESS_BUTTON_BIT  2     // Button Bit which is triggered when encoder 2 is turned counter-clockwise
+
+//////////////////////////////////
+// FUNKY encoder : encoder_3
+#define ENC_3_PLUS_BUTTON_BIT  16     // Button Bit which is triggered when encoder 2 is turned clockwise
+#define ENC_3_LESS_BUTTON_BIT  17     // Button Bit which is triggered when encoder 2 is turned counter-clockwise
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //          Other peripherals                                                                       //
@@ -243,11 +258,21 @@ Some button bits à reserved in Fanatec SPI communicaiton protocol, here are adv
 #define BUT_THRESHOLD_4   850
 
 // DPAD analog readings thresholds
-#define DPAD_THRESHOLD_1   250
-#define DPAD_THRESHOLD_2   600
-#define DPAD_THRESHOLD_3   725
-#define DPAD_THRESHOLD_4   795
-#define DPAD_THRESHOLD_5   950
+#define DPAD_THRESHOLD_1   500
+#define DPAD_THRESHOLD_2   810
+#define DPAD_THRESHOLD_3   920//810
+#define DPAD_THRESHOLD_4   990//795
+#define DPAD_THRESHOLD_5   1018//950
+
+//1023 / 1005 / 896 / 0 / 685 / 975 / 
+
+// FUNKY SWITCH analog readings thresholds
+#define FUNKY_THRESHOLD_1   300
+#define FUNKY_THRESHOLD_2   600
+#define FUNKY_THRESHOLD_3   750//810
+#define FUNKY_THRESHOLD_4   940//795
+
+//1023 /820 / 684 / 516 / 0
 
 // ROtary switches analog readings thresholds
 #define RS_THRESHOLD_1   73

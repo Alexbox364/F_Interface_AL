@@ -1,26 +1,27 @@
 
-/*  F_interface _AL
- *   
- *   
+/*  F_interface _AL vS0.01
  *  This code is inspired by previous work done by Darknao and Ishachar
  * 
  * v0.01 :
- *  - initial development implementing all sensors and displays, tested with hardware version v0.01
- *  - 
- * 
+ *  - initial development implementing all sensors and displays, tested with hardware version v0.02 of F_interface_AL.
  * 
  * TO DO :
- * - test all sensors and actuators and debug
- * - 
+ * - improve axis management to automatically set min and max
+ * - rotary switch debounce and interval restriciton
+ * 
+ * WARNING
+ * - When you flash your wheel with final firmware, please deactivate the Seriel debug function inthe config_wheel.h file, it will make the communication faster
  */
-
-
 
 #include "pins_arduino.h" 
 #include "F_interface_AL.h" 
 #include "pins.h" 
-#include "config_wheel.h" 
 #include <avr/pgmspace.h>
+
+//////////////////////////////////////////////////////////////////////////////
+// CONFIG - Choose your correct configuration file or create your own       //
+#include "config_wheel.h" 
+//////////////////////////////////////////////////////////////////////////////
 
 #define dataLength 33
 #define PRINTBIN(Num) for (uint32_t t = (1UL << (sizeof(Num) * 8) - 1); t; t >>= 1) //Serial.write(Num& t ? '1' : '0'); // Prints a binary number with leading zeros (Automatic Handling)
@@ -53,6 +54,8 @@ unsigned long lastButtonPress;
 int read_CD74HC4067(int pin);         // read multiplexed analog value through CD74HC4067 16-MUX breakout board connected through A1 analog pin
 void inputs_management();             // handles button presses, rotary switches,....
 
+void printBin2(byte aByte);   // Prints binary with leading zeroes
+
 // Current values variables
 
     // Rotary switches management
@@ -67,19 +70,28 @@ void inputs_management();             // handles button presses, rotary switches
     volatile bool B_1_set = false;
     volatile bool A_2_set = false;   
     volatile bool B_2_set = false;
+    volatile bool A_3_set = false;   
+    volatile bool B_3_set = false;
     
     volatile int encoderPos_1 = 0;
     volatile int encoderPos_2 = 0;
+    volatile int encoderPos_3 = 0;
     int old_encoderPos_1 = 0;
     int old_encoderPos_2 = 0;
-
+    int old_encoderPos_3 = 0;
+    
     // Buffer management
     unsigned long buffer_timer;
     int buffer_index = -1;
     bool flag_buffer = LOW;
-    int buttonBits_buffer[24] =      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};       // Button press buffer handling
+    int buttonBits_buffer[25] =      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};       // Button press buffer handling
+    
+    bool button_input_buffer[25];     // Status of button press coming from input_management function
                 
 void test_output();   // test inputs of the wheel
+void test_leds();     // test LED output of the wheel
+void test_7segments();    // test 7 segments display
+uint8_t data[] = { 0xff, 0xff, 0xff, 0xff };
 int n = 0;
 unsigned long timeStamp1;
 
@@ -126,12 +138,14 @@ void setup()
     pinMode(ENC_1_B_PIN, INPUT_PULLUP);
     pinMode(ENC_2_A_PIN, INPUT_PULLUP);
     pinMode(ENC_2_B_PIN, INPUT_PULLUP);
+    pinMode(ENC_3_A_PIN, INPUT_PULLUP);
+    pinMode(ENC_3_B_PIN, INPUT_PULLUP);
 
     cableselect();
 
     // Wheel configuration
     data_out.header = 0xa5;
-    data_out.id = 0x03;
+    data_out.id = 0x01;
 
     // SPI initerrupts configuration
     attachInterrupt(digitalPinToInterrupt(INT_CS_SPI), cableselect, RISING);
@@ -147,7 +161,7 @@ void setup()
     #ifdef HAS_NPX
       strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
       strip.show();            // Turn OFF all pixels ASAP
-      strip.setBrightness(255); // Set BRIGHTNESS to about 1/5 (max = 255)
+      strip.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
 
       play_init_rev_LEDs();   // Plays initialization animation
     #endif 
@@ -170,14 +184,19 @@ void loop() {
     calcOutgoingCrc();
     bool crc8Stat = checkIncomingCrc();
 
-    printmosibuf();
-    printmisobuf();
+    // For debug purposes : 
+    //printmosibuf();         // prints data sent from the base to the wheel
+    //printmisobuf();         // prints data sent from the wheel to the base
+    serialOutput();           // Prints I/O state to Serial Output
+
+    // For test purposes
+    //test_output();
+    //test_leds();
+    //test_7segments();
 
     inputs_management();    // handles button presses, rotary switches,....
-    //test_output();
     buttonBit_buffer_handling();   
-
-
+    
     #ifdef HAS_TM1637
         update_7_segments();
     #endif
@@ -185,8 +204,6 @@ void loop() {
     #ifdef HAS_NPX
         update_rev_LEDS();
     #endif
-
-    //serialOutput();          // Prints I/O state to Serial Output
     
 }
 
@@ -209,14 +226,68 @@ void test_output() {
 }
 
 /////////////////////////////////////////////
+// test LED output of the wheel
+void test_leds() {
+    
+    int index = millis()/1000 % 9;
+    switch (index) {
+        case 0:
+            data_in.leds = 0b0000000000000000;
+            break;
+        case 1:
+            data_in.leds = 0b0000000000000001;
+            break;
+        case 2:
+            data_in.leds = 0b0000000000000011;
+            break;
+        case 3:
+            data_in.leds = 0b0000000000000111;
+            break;
+        case 4:
+            data_in.leds = 0b0000000000001111;
+            break;
+        case 5:
+            data_in.leds = 0b0000000000011111;
+            break;
+        case 6:
+            data_in.leds = 0b0000000000111111;
+            break;
+        case 7:
+            data_in.leds = 0b0000000001111111;
+            break;
+        case 8:
+            data_in.leds = 0b0000000011111111;
+            break;
+        case 9:
+            data_in.leds = 0b0000000111111111;
+            break;
+        
+    }
+}    
+
+/////////////////////////////////////////////
+// test 7 segments display
+void test_7segments() {
+  #ifdef HAS_TM1637
+     int index = millis()/1000 % 9;
+     data[0] = 0xff;
+     data[1] = 0xff;
+     data[2] = 0xff;
+     data[3] = display.encodeDigit(index);
+     display.setBrightness(0x0f);
+     display.setSegments(data);
+ #endif
+}
+
+/////////////////////////////////////////////
 // Prints I/O state to Serial Output
 void serialOutput() {
    Serial.print("B1 : ");
-   printHex(data_out.buttons[0], 2);
+   printBin2(data_out.buttons[0]);
    Serial.print(" | B2 : ");
-   printHex(data_out.buttons[1], 2);
+   printBin2(data_out.buttons[1]);
    Serial.print(" | B3 : ");
-   printHex(data_out.buttons[3], 2);
+   printBin2(data_out.buttons[2]);
    Serial.print(" | Enc : ");
    printHex(data_out.encoder, 2);
    Serial.print(" | X : ");
@@ -230,7 +301,7 @@ void serialOutput() {
    Serial.print(".");
    printHex(data_in.disp[2], 2);
    Serial.print(" | Leds : ");
-   printHex(data_in.leds, 4);
+   printBin2(data_in.leds);
    Serial.print(" | Rumble : ");
    printHex(data_in.rumble[0], 2);
    Serial.print(".");
@@ -245,7 +316,23 @@ void buttonBitChange(uint8_t buttonBit, bool bitOn) {
       if (bitOn) {    // changes a selected bit in one of the 3 button bytes to either on (1) or off (0). Valid values for buttonBit is 1 to 24. See buttons list in last comment.
           //Serial.println("bit change");
           lastButtonPress = millis();
-          if (buttonBit < 23) data_out.raw[2 + ((buttonBit - 1) / 8)] |= (1 << (((buttonBit - 1) % 8)));
+          
+          //data_out.raw[2 + ((buttonBit - 1) / 8)] |= (1 << (((buttonBit - 1) % 8)));
+          if (((buttonBit <= 8) && (buttonBit >= 0))) {
+              bitWrite(data_out.buttons[0], (buttonBit - 1), 1);
+              //data_out.raw[2 + ((buttonBit - 1) / 8)] |= (1 << (((buttonBit - 1) % 8)));
+          }
+          if (((buttonBit <= 16) && (buttonBit >= 9))) {
+              bitWrite(data_out.buttons[1], (buttonBit - 1 - 8), 1);
+              //data_out.raw[2 + ((buttonBit - 1) / 8)] |= (1 << (((buttonBit - 1) % 8)));
+          }
+          if (((buttonBit <= 22) && (buttonBit >= 17))) {
+              bitWrite(data_out.buttons[2], (buttonBit - 1 - 16), 1);
+              //data_out.raw[2 + ((buttonBit - 1) / 8)] |= (1 << (((buttonBit - 1) % 8)));
+          }
+          //data_out.raw[2 + ((buttonBit - 1) / 8)] |= (1 << (((buttonBit - 1) % 8)));*/
+          
+          
           if (buttonBit == 23) data_out.encoder = encoder_plus;
           if (buttonBit == 24) data_out.encoder = encoder_less;
           
@@ -482,6 +569,15 @@ int read_CD74HC4067(int pin) {
 void inputs_management() {
 
     int val=0;
+
+    // As button press can come from various button sources, we use a temporary buffer which is reset at each loop execution. 
+    // The button bits are applied once every button status is retrieved
+    
+    // reset button_input_buffer
+    for (int j = 1; j<25; j++) {
+        button_input_buffer[j] = 0;    // reset status
+    }
+    
     /////////////////////////////////////////////
     // Handle button groups 
     // ONLY ONE BUTTON OF THE GROUP CAN BE PRESSED AT A TIME AS THEY ARE MULTIPLEXED WITH SAME RESISTOR VALUE
@@ -491,26 +587,23 @@ void inputs_management() {
         #ifdef HAS_BUTTON_GROUP_1
         val = read_CD74HC4067(BUT_1_PIN);
         if      (val < BUT_THRESHOLD_1)  {                            // Button 4 pressed
-            buttonBitChange(BUTTON_4_BUTTON_BIT, true);
+            button_input_buffer[BUTTON_4_BUTTON_BIT] = 1;
             if (BUTTON_DEBUG ==1) Serial.println("Button 4");
         }
         else if (val < BUT_THRESHOLD_2) {                             // Button 3 pressed
-            buttonBitChange(BUTTON_3_BUTTON_BIT, true);
+            button_input_buffer[BUTTON_3_BUTTON_BIT] = 1;
             if (BUTTON_DEBUG ==1) Serial.println("Button 3");
         }   
         else if (val < BUT_THRESHOLD_3) {                             // Button 2 pressed
-            buttonBitChange(BUTTON_2_BUTTON_BIT, true); 
+            button_input_buffer[BUTTON_2_BUTTON_BIT] = 1;
             if (BUTTON_DEBUG ==1) Serial.println("Button 2");
         }     
         else if (val < BUT_THRESHOLD_4)  {                            // Button 1 pressed
-            buttonBitChange(BUTTON_1_BUTTON_BIT, true);               
+            button_input_buffer[BUTTON_1_BUTTON_BIT] = 1;
             if (BUTTON_DEBUG ==1) Serial.println("Button 1");
         }     
         else {                                                        // No button pressed
-            buttonBitChange(BUTTON_1_BUTTON_BIT, false);
-            buttonBitChange(BUTTON_2_BUTTON_BIT, false);
-            buttonBitChange(BUTTON_3_BUTTON_BIT, false);
-            buttonBitChange(BUTTON_4_BUTTON_BIT, false);
+        
         }
         
         #endif
@@ -520,26 +613,22 @@ void inputs_management() {
         #ifdef HAS_BUTTON_GROUP_2
         val = read_CD74HC4067(BUT_2_PIN);
         if      (val < BUT_THRESHOLD_1) {
-            buttonBitChange(BUTTON_8_BUTTON_BIT, true);               // Button 8 pressed  
+            button_input_buffer[BUTTON_8_BUTTON_BIT] = 1;            // Button 8 pressed
             if (BUTTON_DEBUG ==1) Serial.println("Button 8");
         }
         else if (val < BUT_THRESHOLD_2) {
-            buttonBitChange(BUTTON_7_BUTTON_BIT, true);               // Button 7 pressed
+            button_input_buffer[BUTTON_7_BUTTON_BIT] = 1;            // Button 7 pressed
             if (BUTTON_DEBUG ==1) Serial.println("Button 7");
         }
         else if (val < BUT_THRESHOLD_3) {
-            buttonBitChange(BUTTON_6_BUTTON_BIT, true);               // Button 6 pressed
+            button_input_buffer[BUTTON_6_BUTTON_BIT] = 1;            // Button 6 pressed
             if (BUTTON_DEBUG ==1) Serial.println("Button 6");
         }
         else if (val < BUT_THRESHOLD_4) {
-            buttonBitChange(BUTTON_5_BUTTON_BIT, true);              // Button 5 pressed
+            button_input_buffer[BUTTON_5_BUTTON_BIT] = 1;            // Button 5 pressed
             if (BUTTON_DEBUG ==1) Serial.println("Button 5");
         }
         else {                                                       // No button pressed
-            buttonBitChange(BUTTON_5_BUTTON_BIT, false);
-            buttonBitChange(BUTTON_6_BUTTON_BIT, false);
-            buttonBitChange(BUTTON_7_BUTTON_BIT, false);
-            buttonBitChange(BUTTON_8_BUTTON_BIT, false);
         }
         #endif
   
@@ -548,26 +637,22 @@ void inputs_management() {
         #ifdef HAS_BUTTON_GROUP_3
         val = read_CD74HC4067(BUT_3_PIN);
         if      (val < BUT_THRESHOLD_1) {
-            buttonBitChange(BUTTON_12_BUTTON_BIT, true);            // Button 12 pressed  
+            button_input_buffer[BUTTON_12_BUTTON_BIT] = 1;            // Button 12 pressed
             if (BUTTON_DEBUG ==1) Serial.println("Button 12");
         }
         else if (val < BUT_THRESHOLD_2) {
-            buttonBitChange(BUTTON_11_BUTTON_BIT, true);            // Button 11 pressed
+            button_input_buffer[BUTTON_11_BUTTON_BIT] = 1;            // Button 11 pressed
             if (BUTTON_DEBUG ==1) Serial.println("Button 11");
         }
         else if (val < BUT_THRESHOLD_3) {
-            buttonBitChange(BUTTON_10_BUTTON_BIT, true);            // Button 10 pressed
+            button_input_buffer[BUTTON_10_BUTTON_BIT] = 1;            // Button 10 pressed
             if (BUTTON_DEBUG ==1) Serial.println("Button 10");
         }
         else if (val < BUT_THRESHOLD_4) {
-            buttonBitChange(BUTTON_9_BUTTON_BIT, true);             // Button 9 pressed
+            button_input_buffer[BUTTON_9_BUTTON_BIT] = 1;            // Button 9 pressed
             if (BUTTON_DEBUG ==1) Serial.println("Button 9");
         }
         else {                                                     // No button pressed
-            buttonBitChange(BUTTON_9_BUTTON_BIT, false);
-            buttonBitChange(BUTTON_10_BUTTON_BIT, false);
-            buttonBitChange(BUTTON_11_BUTTON_BIT, false);
-            buttonBitChange(BUTTON_12_BUTTON_BIT, false);
         }
         #endif
   
@@ -576,26 +661,22 @@ void inputs_management() {
         #ifdef HAS_BUTTON_GROUP_4
         val = read_CD74HC4067(BUT_4_PIN);
         if      (val < BUT_THRESHOLD_1) {
-            buttonBitChange(BUTTON_16_BUTTON_BIT, true);          // Button 16 pressed 
+            button_input_buffer[BUTTON_16_BUTTON_BIT] = 1;            // Button 16 pressed
             if (BUTTON_DEBUG ==1) Serial.println("Button 16"); 
         }
         else if (val < BUT_THRESHOLD_2) {
-            buttonBitChange(BUTTON_15_BUTTON_BIT, true);          // Button 15 pressed
+            button_input_buffer[BUTTON_15_BUTTON_BIT] = 1;            // Button 15 pressed
             if (BUTTON_DEBUG ==1) Serial.println("Button 15");
         }
         else if (val < BUT_THRESHOLD_3) {
-            buttonBitChange(BUTTON_14_BUTTON_BIT, true);          // Button 14 pressed
+            button_input_buffer[BUTTON_14_BUTTON_BIT] = 1;           // Button 14 pressed
             if (BUTTON_DEBUG ==1) Serial.println("Button 14");
         }
         else if (val < BUT_THRESHOLD_4) {
-            buttonBitChange(BUTTON_13_BUTTON_BIT, true);          // Button 13 pressed
-            if (BUTTON_DEBUG ==1) Serial.println("Button 13");
+            button_input_buffer[BUTTON_13_BUTTON_BIT] = 1;
+            if (BUTTON_DEBUG ==1) Serial.println("Button 13");       // Button 13 pressed
         }
         else {                                                    // No button pressed
-            buttonBitChange(BUTTON_13_BUTTON_BIT, false);
-            buttonBitChange(BUTTON_14_BUTTON_BIT, false);
-            buttonBitChange(BUTTON_15_BUTTON_BIT, false);
-            buttonBitChange(BUTTON_16_BUTTON_BIT, false);
         }
         #endif
       
@@ -605,17 +686,11 @@ void inputs_management() {
         val = read_CD74HC4067(RS_1_PIN);
         val_eval = val%INTERVAL_RS_1;
 
-        // Check that the measured value is clote to a rotary switch step, if not, it si ignored.
-        if (((val_eval >=0) && (val_eval <= INTERVAL_RS_1/2 )) || ((val_eval >= (2*INTERVAL_RS_1 /3)) && (val_eval <= INTERVAL_RS_1))) {
-           /* Serial.print(INTERVAL_RS_1);
-            Serial.print(" / ");
-            Serial.print(val);
-            Serial.print(" / ");
-            Serial.print(val_eval);
-             Serial.print(" / ");*/
+        // Check that the measured value is close to a rotary switch step, if not, it si ignored.
+        if (((val_eval >=0) && (val_eval <= INTERVAL_RS_1/3 )) || ((val_eval >= (2*INTERVAL_RS_1 /3)) && (val_eval <= INTERVAL_RS_1))) {
             // measured value is shifted of half a rotary switch step to make euclidian division :
             rs_val[0] = (val + INTERVAL_RS_1/2)/INTERVAL_RS_1;
-            //if (BUTTON_DEBUG ==1) Serial.println(rs_val[0]);
+            if (BUTTON_DEBUG ==1) Serial.println(rs_val[0]);
         }
         // Once position is measured, now check which way rotation is achieved and trigger button press according to configuration file. 
         // button press is handled by a buffer
@@ -633,14 +708,14 @@ void inputs_management() {
               else {
                   rs_pos[0] = rs_pos[0] - (rs_val[0] - old_rs_val[0]);
                   if (rs_val[0] > old_rs_val[0]) {
-                      rs_pos[0]++;
-                      if (BUTTON_DEBUG ==1) Serial.println("RS_1++");
-                      buttonBits_buffer[RS_1_PLUS_BUTTON_BIT]++;   // add action on the buffer
-                  }
-                  else {
                       rs_pos[0]--;
                       if (BUTTON_DEBUG ==1) Serial.println("RS_1--");
                       buttonBits_buffer[RS_1_LESS_BUTTON_BIT]++;   // add action on the buffer
+                  }
+                  else {
+                      rs_pos[0]++;
+                      if (BUTTON_DEBUG ==1) Serial.println("RS_1++");
+                      buttonBits_buffer[RS_1_PLUS_BUTTON_BIT]++;   // add action on the buffer
                   }
               }
               old_rs_val[0] = rs_val[0];
@@ -652,12 +727,12 @@ void inputs_management() {
         // Rotary switch 2
         #ifdef HAS_RS_2
         val = read_CD74HC4067(RS_2_PIN);
+        
         val_eval2 = val%INTERVAL_RS_2;
-
+        
         // Check that the measured value is clote to a rotary switch step, if not, it si ignored.
-        if (((val_eval2 >=0) && (val_eval2 <= INTERVAL_RS_2/2 )) || ((val_eval2 >= (2*INTERVAL_RS_2/3)) && (val_eval2 <= INTERVAL_RS_2))) {
+        if (((val_eval2 >=0) && (val_eval2 <= INTERVAL_RS_2/3 )) || ((val_eval2 >= (2*INTERVAL_RS_2/3)) && (val_eval2 <= INTERVAL_RS_2))) {
             rs_val[1] = (val + INTERVAL_RS_2/2)/INTERVAL_RS_2;          // measured value is shifted of half a rotary switch step to make euclidian division :
-            //if (BUTTON_DEBUG ==1) Serial.println(rs_val[0]);
         }
         // Once position is measured, now check which way rotation is achieved and trigger button press according to configuration file. 
         // button press is handled by a buffer
@@ -675,14 +750,14 @@ void inputs_management() {
               else {
                   rs_pos[1] = rs_pos[1] - (rs_val[1] - old_rs_val[1]);
                   if (rs_val[1] > old_rs_val[1]) {
-                      rs_pos[1]++;
-                      if (BUTTON_DEBUG ==1) Serial.println("RS_2++");
-                      buttonBits_buffer[RS_2_PLUS_BUTTON_BIT]++;   // add action on the buffer
-                  }
-                  else {
                       rs_pos[1]--;
                       if (BUTTON_DEBUG ==1) Serial.println("RS_2--");
                       buttonBits_buffer[RS_2_LESS_BUTTON_BIT]++;   // add action on the buffer
+                  }
+                  else {
+                      rs_pos[1]++;
+                      if (BUTTON_DEBUG ==1) Serial.println("RS_2++");
+                      buttonBits_buffer[RS_2_PLUS_BUTTON_BIT]++;   // add action on the buffer
                   }
               }
               old_rs_val[1] = rs_val[1];
@@ -693,10 +768,11 @@ void inputs_management() {
         // Rotary switch 3
         #ifdef HAS_RS_3
         val = read_CD74HC4067(RS_3_PIN);
+        
         val_eval3 = val%INTERVAL_RS_3;
-
+        
         // Check that the measured value is clote to a rotary switch step, if not, it si ignored.
-        if (((val_eval3 >=0) && (val_eval3 <= INTERVAL_RS_3/2 )) || ((val_eval3 >= (2*INTERVAL_RS_3/3)) && (val_eval3 <= INTERVAL_RS_3))) {
+        if (((val_eval3 >=0) && (val_eval3 <= INTERVAL_RS_3/3 )) || ((val_eval3 >= (2*INTERVAL_RS_3/3)) && (val_eval3 <= INTERVAL_RS_3))) {
             rs_val[2] = (val + INTERVAL_RS_3/2)/INTERVAL_RS_3;   // measured value is shifted of half a rotary switch step to make euclidian division :
         }
         // Once position is measured, now check which way rotation is achieved and trigger button press according to configuration file. 
@@ -715,14 +791,14 @@ void inputs_management() {
               else {
                   rs_pos[2] = rs_pos[2] - (rs_val[2] - old_rs_val[2]);
                   if (rs_val[2] > old_rs_val[2]) {
-                      rs_pos[2]++;
-                      if (BUTTON_DEBUG ==1) Serial.println("RS_3++");
-                      buttonBits_buffer[RS_3_PLUS_BUTTON_BIT]++;   // add action on the buffer
-                  }
-                  else {
                       rs_pos[2]--;
                       if (BUTTON_DEBUG ==1) Serial.println("RS_3--");
                       buttonBits_buffer[RS_3_LESS_BUTTON_BIT]++;   // add action on the buffer
+                  }
+                  else {
+                      rs_pos[2]++;
+                      if (BUTTON_DEBUG ==1) Serial.println("RS_3++");
+                      buttonBits_buffer[RS_3_PLUS_BUTTON_BIT]++;   // add action on the buffer
                   }
               }
               old_rs_val[2] = rs_val[2];
@@ -733,10 +809,11 @@ void inputs_management() {
         // Rotary switch 4
         #ifdef HAS_RS_4
         val = read_CD74HC4067(RS_4_PIN);
+        
         val_eval4 = val%INTERVAL_RS_4;
-
+        
         // Check that the measured value is clote to a rotary switch step, if not, it si ignored.
-        if (((val_eval4 >=0) && (val_eval4 <= INTERVAL_RS_4/2 )) || ((val_eval4 >= (2*INTERVAL_RS_4/3)) && (val_eval4 <= INTERVAL_RS_4))) {
+        if (((val_eval4 >=0) && (val_eval4 <= INTERVAL_RS_4/3 )) || ((val_eval4 >= (2*INTERVAL_RS_4/3)) && (val_eval4 <= INTERVAL_RS_4))) {
             rs_val[3] = (val + INTERVAL_RS_4/2)/INTERVAL_RS_4;   // measured value is shifted of half a rotary switch step to make euclidian division :
         }
         // Once position is measured, now check which way rotation is achieved and trigger button press according to configuration file. 
@@ -756,13 +833,13 @@ void inputs_management() {
                   rs_pos[3] = rs_pos[3] - (rs_val[3] - old_rs_val[3]);
                   if (rs_val[3] > old_rs_val[3]) {
                       rs_pos[3]++;
-                      if (BUTTON_DEBUG ==1) Serial.println("RS_4++");
-                      buttonBits_buffer[RS_4_PLUS_BUTTON_BIT]++;   // add action on the buffer
-                  }
-                  else {
-                      rs_pos[3]--;
                       if (BUTTON_DEBUG ==1) Serial.println("RS_4--");
                       buttonBits_buffer[RS_4_LESS_BUTTON_BIT]++;   // add action on the buffer
+                  }
+                  else {
+                      rs_pos[3]++;
+                      if (BUTTON_DEBUG ==1) Serial.println("RS_4++");
+                      buttonBits_buffer[RS_4_PLUS_BUTTON_BIT]++;   // add action on the buffer
                   }
               }
               old_rs_val[3] = rs_val[3];
@@ -775,38 +852,42 @@ void inputs_management() {
         /////////////////////////////////////////////
         // APM Left - read analog values and determine which button is pressed according to the analog value 
         #ifdef HAS_APM_L
-        data_out.axisX = map(read_CD74HC4067(APM_L_ANALOG_PIN), 0, 1023, 0, 255);
+        // Analog axis management
+        //data_out.axisX = map(read_CD74HC4067(APM_L_ANALOG_PIN), 0, 1023, 0, 255);
+        //if (BUTTON_DEBUG ==1) Serial.println(data_out.axisX);
+
+        // Buttons management
         val = read_CD74HC4067(APM_L_BUT_PIN);
         if      (val < APM_THRESHOLD_1) {
-            buttonBitChange(APM_L_PD_BUTTON_BIT, true);             // Button Paddle Down pressed  
+            button_input_buffer[APM_L_PD_BUTTON_BIT] = 1;             // Button Paddle Down pressed  
             if (BUTTON_DEBUG ==1) Serial.println("Paddle Left Down");
         }
         else if (val < APM_THRESHOLD_2) {
-            buttonBitChange(APM_L_PU_BUTTON_BIT, true);             // Button Paddle Up pressed
+            button_input_buffer[APM_L_PU_BUTTON_BIT] = 1;             // Button Paddle Up pressed
             if (BUTTON_DEBUG ==1) Serial.println("Paddle Left UP");
         }
         else {                                                      // No button pressed
-            buttonBitChange(APM_L_PU_BUTTON_BIT, false);
-            buttonBitChange(APM_L_PD_BUTTON_BIT, false);
         }
         #endif
 
         /////////////////////////////////////////////
         // APM right - read analog values and determine which button is pressed according to the analog value 
         #ifdef HAS_APM_R
-        data_out.axisY = map(read_CD74HC4067(APM_R_ANALOG_PIN), 0, 1023, 0, 255);
+        // Analog axis management
+        //data_out.axisY = map(read_CD74HC4067(APM_R_ANALOG_PIN), 0, 1023, 0, 255);
+        //if (BUTTON_DEBUG ==1) Serial.println(data_out.axisY);
+        
+        // Buttons management
         val = read_CD74HC4067(APM_R_BUT_PIN);
         if      (val < APM_THRESHOLD_1)  {
-            buttonBitChange(APM_R_PD_BUTTON_BIT, true);             // Button Paddle Down pressed  
+            button_input_buffer[APM_R_PD_BUTTON_BIT] = 1;             // Button Paddle Down pressed  
             if (BUTTON_DEBUG ==1) Serial.println("Paddle Right Down");
         }
         else if (val < APM_THRESHOLD_2)  {
-            buttonBitChange(APM_R_PU_BUTTON_BIT, true);             // Button Paddle Up pressed
+            button_input_buffer[APM_R_PU_BUTTON_BIT] = 1;             // Button Paddle Up pressed
             if (BUTTON_DEBUG ==1) Serial.println("Paddle Right Up");
         }
         else {                                                      // No button pressed
-            buttonBitChange(APM_R_PU_BUTTON_BIT, false);
-            buttonBitChange(APM_R_PD_BUTTON_BIT, false);
         }
         #endif
         
@@ -850,38 +931,80 @@ void inputs_management() {
         }
         #endif
         
+        #ifdef HAS_ENC_3
+        if(digitalRead(ENC_3_A_PIN) != A_3_set ) {                    // debounce once more
+            A_3_set = !A_3_set;
+            if ( A_3_set && !B_3_set ) {                              // adjust counter +1 if A leads B
+                    encoderPos_3 += 1;
+                    buttonBits_buffer[ENC_3_PLUS_BUTTON_BIT]++;       // Increase buffer value
+                    if (BUTTON_DEBUG ==1) {Serial.print("Encoder 3 ++ : ");  Serial.println(encoderPos_3); }
+            }
+        }
+        if(digitalRead(ENC_3_B_PIN) != B_3_set ) {
+            B_3_set = !B_3_set;
+            if( B_3_set && !A_3_set ) {                               //  adjust counter - 1 if B leads A
+                    encoderPos_3 -= 1;
+                    buttonBits_buffer[ENC_3_LESS_BUTTON_BIT]++;       // Increase buffer value
+                    if (BUTTON_DEBUG ==1) {Serial.print("Encoder 3 -- : ");  Serial.println(encoderPos_3); }
+            }
+        }
+        #endif
+        
     ////////////////////////////////////////////////////////
     // handle D-PAD - read analog value and determine which button is pressed according to the analog value 
         #ifdef HAS_DPAD
         val = read_CD74HC4067(DPAD_PIN);
         if      (val < DPAD_THRESHOLD_1) { 
-            buttonBitChange(DPAD_R_BUTTON_BIT, true);               // RIGHT pressed  
+            button_input_buffer[DPAD_R_BUTTON_BIT] = 1;
             if (BUTTON_DEBUG ==1) Serial.println("DPAD Right");
         }
         else if (val < DPAD_THRESHOLD_2) { 
-            buttonBitChange(DPAD_D_BUTTON_BIT, true);               // DOWN pressed
+            button_input_buffer[DPAD_D_BUTTON_BIT] = 1;
             if (BUTTON_DEBUG ==1) Serial.println("DPAD Down");
         }
         else if (val < DPAD_THRESHOLD_3) { 
-            buttonBitChange(DPAD_L_BUTTON_BIT, true);               // LEFT pressed
+            button_input_buffer[DPAD_L_BUTTON_BIT] = 1;
             if (BUTTON_DEBUG ==1) Serial.println("DPAD Left");
         }
         else if (val < DPAD_THRESHOLD_4) { 
-            buttonBitChange(DPAD_C_BUTTON_BIT, true);               // CENTER pressed
+            button_input_buffer[DPAD_C_BUTTON_BIT] = 1;
             if (BUTTON_DEBUG ==1) Serial.println("DPAD Center");
         }
         else if (val < DPAD_THRESHOLD_5) {
-            buttonBitChange(DPAD_U_BUTTON_BIT, true);               // UP pressed
+            button_input_buffer[DPAD_U_BUTTON_BIT] = 1;
             if (BUTTON_DEBUG ==1) Serial.println("DPAD Up");
         }
         else {                                                      // No button pressed
-            buttonBitChange(DPAD_L_BUTTON_BIT, false);
-            buttonBitChange(DPAD_R_BUTTON_BIT, false);
-            buttonBitChange(DPAD_U_BUTTON_BIT, false);
-            buttonBitChange(DPAD_D_BUTTON_BIT, false);
-            buttonBitChange(DPAD_C_BUTTON_BIT, false);
         }
         #endif
+
+
+////////////////////////////////////////////////////////
+    // handle Funky switch - read analog value and determine which button is pressed according to the analog value 
+        #ifdef HAS_FUNKY
+        val = read_CD74HC4067(DPAD_PIN);
+        //Serial.println(val);
+        if      (val < FUNKY_THRESHOLD_1) { 
+            button_input_buffer[FUNKY_R_BUTTON_BIT] = 1;
+            if (BUTTON_DEBUG ==1) Serial.println("FUNKY Right");
+        }
+        else if (val < FUNKY_THRESHOLD_2) { 
+            button_input_buffer[FUNKY_D_BUTTON_BIT] = 1;
+            if (BUTTON_DEBUG ==1) Serial.println("FUNKY Down");
+        }
+        else if (val < FUNKY_THRESHOLD_3) { 
+            button_input_buffer[FUNKY_L_BUTTON_BIT] = 1;
+            if (BUTTON_DEBUG ==1) Serial.println("FUNKY Left");
+        }
+        else if (val < FUNKY_THRESHOLD_4) {
+            button_input_buffer[FUNKY_U_BUTTON_BIT] = 1;
+            if (BUTTON_DEBUG ==1) Serial.println("FUNKY Up");
+        }
+        else {                                                      // No button pressed
+        }
+        #endif
+
+
 
     ////////////////////////////////////////////////////////
     // handle Joystick
@@ -889,10 +1012,10 @@ void inputs_management() {
         data_out.axisX = map(read_CD74HC4067(JOY_X_PIN), 0, 1023, 0, 255);          // Handles axis X of Joystick
         data_out.axisY = map(read_CD74HC4067(JOY_Y_PIN), 0, 1023, 0, 255);          // Handles axis Y of Joystick
         if (read_CD74HC4067(JOY_BUT_PIN) < 500) {                                   // Handles Joystick button
-            buttonBitChange(JOY_BUTTON_BUTTON_BIT, true);
+            button_input_buffer[JOY_BUTTON_BUTTON_BIT] = 1;
+            //buttonBitChange(JOY_BUTTON_BUTTON_BIT, true);
             if (BUTTON_DEBUG ==1) Serial.println("JOY Button");
         }
-        else buttonBitChange(JOY_BUTTON_BUTTON_BIT, false);
         #endif
 }
 
@@ -900,21 +1023,32 @@ void inputs_management() {
 // handling of button presses buffer, mostly required by impulsion based interfaces like encoders & rotary switches
 void buttonBit_buffer_handling() {       
     
-    if ((flag_buffer == HIGH) && ((millis()-buffer_timer) > 20)) {                  // If action is previously triggerred & timer elapsed, reset it
+    for (int i=1; i<25; i++) {
+        // Handle impulsion base button presses like encoder, rotary switches
+        if ((buttonBits_buffer[i] > 0) && (flag_buffer == LOW)) {                 // If buffer is not empty or if a button is pressed via input_management function trigger a button press
+            buttonBitChange(i, true);
+            buffer_index = i;
+            flag_buffer = HIGH;              // records that button is pressed for impusion based inputs (rotary encoder, encoder, 
+            buffer_timer = millis();              
+            //break;
+        }
+        // Handle momentary button presses like classic buttons, paddles, 
+        else if(button_input_buffer[i] == 1) {
+            buttonBitChange(i, true);
+        }
+        else if ( (flag_buffer == HIGH) && (i == buffer_index))   {      // Do nothing if a buffer is ongoing
+           
+        }
+        else {
+          buttonBitChange(i, false);
+        }
+    }
+
+    if ((flag_buffer == HIGH) && ((millis()-buffer_timer) > 50)) {                  // If action is previously triggerred & timer elapsed, reset it
         buttonBitChange(buffer_index, false);
         if(buttonBits_buffer[buffer_index] > 0) buttonBits_buffer[buffer_index]--;  // mark button press as done and decrement the buffer
         buffer_index = -1;
         flag_buffer = LOW;                                                          // records that button is released
-    }
-    
-    for (int i=0; i<24; i++) {
-        if ((buttonBits_buffer[i] > 0) && (flag_buffer == LOW)) {                   // If buffer is not empty, trigger a button press
-            buffer_index = i;
-            flag_buffer = HIGH;                                                     // records that button is pressed 
-            buffer_timer = millis();
-            buttonBitChange(i, true);
-            break;
-        }
     }
 }
 ////////////////////////////////////////////////////////
@@ -999,17 +1133,26 @@ void update_rev_LEDS() {
 void update_7_segments() {
     
     #ifdef HAS_TM1637
-        
-        display.setSegments({data_in.disp[0], data_in.disp[1], data_in.disp[2]}, 3, 0);
+        /*data[0] = data_in.disp[0];
+        data[1] = data_in.disp[1];
+        data[2] = data_in.disp[2];
+        data[3] = data_in.disp[3];
+        display.setSegments(data, 3, 0);*/
 
         //_ASCII_table[] lookup table converts 7 segment bytes to the corresponding ASCII character.
-        Serial.print("Segments : ");
-        Serial.print(_7_to_ASCII_table[data_in.disp[0]]);
-        Serial.print(" / ");
-        Serial.print(_7_to_ASCII_table[data_in.disp[1]]);
-        Serial.print(" / ");
-        Serial.println(_7_to_ASCII_table[data_in.disp[2]]);
-    
+        if (BUTTON_DEBUG ==1) Serial.print("Segments : ");
+        if (BUTTON_DEBUG ==1) Serial.print(_7_to_ASCII_table[data_in.disp[0]]);
+        if (BUTTON_DEBUG ==1) Serial.print(" / ");
+        if (BUTTON_DEBUG ==1) Serial.print(_7_to_ASCII_table[data_in.disp[1]]);
+        if (BUTTON_DEBUG ==1) Serial.print(" / ");
+        if (BUTTON_DEBUG ==1) Serial.println(_7_to_ASCII_table[data_in.disp[2]]);
+
+        data[0] = display.encodeDigit(_7_to_ASCII_table[data_in.disp[0]]);
+        data[1] = display.encodeDigit(_7_to_ASCII_table[data_in.disp[1]]);
+        data[2] = display.encodeDigit(_7_to_ASCII_table[data_in.disp[2]]);
+        data[3] = 0xff;
+        display.setBrightness(0x0f);
+        display.setSegments(data);
         // Custom code to display segmments to write by you
         // Individual segment ASCII character is accessible via _7_to_ASCII_table[data_in.disp[0]] to _7_to_ASCII_table[data_in.disp[2]]
     #endif
@@ -1034,12 +1177,12 @@ void update_OLED() {
         display2.display();
         
         //_ASCII_table[] lookup table converts 7 segment bytes to the corresponding ASCII character.
-        Serial.print("OLED : ");
-        Serial.print(_7_to_ASCII_table[data_in.disp[0]]);
-        Serial.print(" / ");
-        Serial.print(_7_to_ASCII_table[data_in.disp[1]]);
-        Serial.print(" / ");
-        Serial.println(_7_to_ASCII_table[data_in.disp[2]]);
+        if (BUTTON_DEBUG ==1) Serial.print("OLED : ");
+        if (BUTTON_DEBUG ==1) Serial.print(_7_to_ASCII_table[data_in.disp[0]]);
+        if (BUTTON_DEBUG ==1) Serial.print(" / ");
+        if (BUTTON_DEBUG ==1) Serial.print(_7_to_ASCII_table[data_in.disp[1]]);
+        if (BUTTON_DEBUG ==1) Serial.print(" / ");
+        if (BUTTON_DEBUG ==1) Serial.println(_7_to_ASCII_table[data_in.disp[2]]);
     
         // Custom code to display segmments to write by you
         // Individual segment ASCII character is accessible via _7_to_ASCII_table[data_in.disp[0]] to _7_to_ASCII_table[data_in.disp[2]]
@@ -1073,4 +1216,10 @@ void play_init_rev_LEDs() {
         }
     #endif
 }
-         
+
+////////////////////////////////////////////////////////
+// Prints binary with leading zeroes
+void printBin2(byte aByte) {
+  for (int8_t aBit = 7; aBit >= 0; aBit--)
+    Serial.write(bitRead(aByte, aBit) ? '1' : '0');
+}

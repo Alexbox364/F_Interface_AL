@@ -5,6 +5,8 @@
 
 // Pins Arduino
 
+#define ENC_3_A_PIN         A5 // Can be used as TM1637 is not used in the project
+#define ENC_3_B_PIN         A4 // Can be used as TM1637 is not used in the project
 #define INT_CS_SPI          2
 #define MUX_S0_PIN          3
 #define MUX_S1_PIN          4
@@ -18,7 +20,7 @@
 #define MISO_PIN            12
 #define CLK_PIN             13
 
-#define TM1637_DIO_PIN      A0
+#define TM1637_DIO_PIN      A5
 #define TM1637_CLK_PIN      A4
 
 #define MUX_SIG_PIN         A1
