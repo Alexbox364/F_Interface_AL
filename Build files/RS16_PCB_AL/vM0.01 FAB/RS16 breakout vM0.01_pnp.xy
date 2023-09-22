@@ -1,0 +1,36 @@
+# Pick And Place List
+# Company=
+# Author=
+# eMail=
+#
+# Project=RS16 breakout vM0.01
+# Date=14:09:33
+# CreatedBy=Fritzing 1.0.1rc.2023-09-04.CD-1653-0-8d480a18
+#
+#
+# Coordinates in mils, always center of component
+# Origin 0/0=Lower left corner of PCB
+# Rotation in degree (0-360, math. pos.)
+#
+RefDes,Description,Package,X,Y,Rotation,Side,Mount
+Description: resistance;capacitance;inductance;voltage;current;power;mpn;mn;
+R2,"10k;;;;;0.25W;;;","THT",1596.65,287.369,112,Top,THT
+R3,"10k;;;;;0.25W;;;","THT",1388.11,782.465,23,Top,THT
+R5,"10k;;;;;0.25W;;;","THT",899.516,282.421,68,Top,THT
+J6,";;;;;;;;","THT",659.032,539.448,156,Top,THT
+R6,"10k;;;;;0.25W;;;","THT",1096.01,86.465,23,Top,THT
+RS16,";;;;;;;;","",1243.74,432.987,0,Top,MANUAL
+J5,";;;;;;;;","THT",491.631,142.648,-19,Top,THT
+R9,"10k;;;;;0.25W;;;","THT",553.38,489.566,-112,Top,THT
+R10,"10k;;;;;0.25W;;;","THT",290.286,226.696,111,Top,THT
+R8,"10k;;;;;0.25W;;;","THT",455.387,252.375,157,Top,THT
+RS16,";;;;;;;;","",374.106,427.699,180,Top,MANUAL
+R13,"10k;;;;;0.25W;;;","THT",188.131,345.088,-113,Top,THT
+R1,"10k;;;;;0.25W;;;","THT",1090.51,780.012,-23,Top,THT
+R7,"10k;;;;;0.25W;;;","THT",1396.81,85.295,-23,Top,THT
+R4,"10k;;;;;0.25W;;;","THT",1595.53,586.889,67,Top,THT
+J3,";;;;;;;;","THT",882.531,578.789,-157,Top,THT
+R11,"10k;;;;;0.25W;;;","THT",288.909,608.597,157,Top,THT
+J4,";;;;;;;;","THT",659.031,303.848,23,Top,THT
+R14,"10k;;;;;0.25W;;;","THT",454.731,628.388,113,Top,THT
+R12,"10k;;;;;0.25W;;;","THT",176.932,504.901,26,Top,THT

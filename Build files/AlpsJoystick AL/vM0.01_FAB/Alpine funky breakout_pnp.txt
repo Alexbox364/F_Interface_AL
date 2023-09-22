@@ -1,0 +1,50 @@
+*Pick And Place List
+*Company=
+*Author=
+*eMail=
+*
+*Project=Alpine funky breakout
+*Date=13:23:26
+*CreatedBy=Fritzing 0.9.3b.04.19.5c895d327c44a3114e5fcc9d8260daf0cbb52806
+*
+*
+*Coordinates in mm, always center of component
+*Origin 0/0=Lower left corner of PCB
+*Rotation in degree (0-360, math. pos.)
+*
+*No;Value;Package;X;Y;Rotation;Side;Name
+1;;;30.1796;-12.912;0;Bottom;TXT1
+2;;;4.07407;-21.7079;-90;Bottom;TXT1
+3;10k;THT;27.9407;-19.051;90;Bottom;10K
+4;;;9.20054;-23.8161;0;Bottom;Hole4
+5;;;15.6575;-16.5685;0;Bottom;Via4
+6;;;30.3678;-17.9622;0;Bottom;TXT1
+7;;;4.02706;-11.2813;-90;Bottom;TXT1
+8;;cap-pth-5mm;25.421;-22.1035;-90;Bottom;10nF
+9;;;32.5076;-23.8161;0;Bottom;Hole1
+10;;cap-pth-5mm;23.0785;-2.39881;-180;Bottom;10nF
+11;;THT;16.6654;-12.9422;0;Bottom;JS1
+12;;;4.12113;-6.34245;-90;Bottom;TXT1
+13;;;11.4242;-20.1903;0;Bottom;Via1
+14;;;7.78322;-6.17833;0;Bottom;Via2
+15;;;4.12113;-8.83541;-90;Bottom;TXT1
+16;;;10.9599;-14.1349;-90;Bottom;TXT2
+17;33k;THT;5.5785;-19.2085;90;Bottom;33K
+18;22k;THT;17.5063;-24.2885;-180;Bottom;22K
+19;;;4.02706;-16.2045;-90;Bottom;TXT1
+20;;;21.0198;-9.32477;0;Bottom;Via3
+21;;THT;1.95646;-12.7214;0;Bottom;J1
+22;;;30.2267;-7.69085;0;Bottom;TXT1
+23;;;4.0741;-3.78677;-90;Bottom;TXT1
+24;;;32.479;-2.10228;0;Bottom;Hole2
+25;;;16.6999;-7.53151;0;Bottom;TXT2
+26;;;4.0741;-19.0268;-90;Bottom;TXT1
+27;;;4.02706;-14.0565;-90;Bottom;TXT1
+28;;;9.20054;-2.08385;0;Bottom;Hole3
+29;;;22.1283;-15.4049;-90;Bottom;TXT2
+30;10k;THT;27.9407;-6.69141;-90;Bottom;10K
+31;;;25.5785;-6.65077;0;Bottom;Via5
+32;;;30.2737;-15.3108;0;Bottom;TXT1
+33;;THT;32.98;-12.9093;0;Bottom;J2
+34;;;30.2267;-10.3249;0;Bottom;TXT1
+35;5k;THT;5.73598;-6.61013;90;Bottom;5K
