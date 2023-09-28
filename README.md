@@ -95,7 +95,7 @@ DPAD	Group of 5 buttons that make a direction pad – up / down / left / right /
 General schematic will help you understand the PCB wiring and link with the code.
 It can be found in the Fritzing file
 
-<img width="557" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/b5dcc4ed-7849-4299-a5e0-010143d4b87b">
+![F_Interface_AL_Hardware_v0 02_bb](https://github.com/Alexbox364/F_Interface_AL/assets/17022734/ec5a1f42-6b32-48bb-b337-7370230d49e7)
 
 ## Arduino Nano
 The setup uses a classic arduino nano, original or clone.
