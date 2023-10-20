@@ -97,17 +97,17 @@ Wheel type
 
 Wheels IDs
 
-{0x01} for BMW M3 GT2, 
-{0x02} for ClubSport FORMULA, 
-{0x04) for Uni hub
+{0x01} for BMW M3 GT2,              // Works well
+{0x02} for ClubSport FORMULA,       // Works well
+{0x04) for Uni hub                  // Works well
 {0x05} X
-{0x06} universal hub hub xbox one
-{0x07} CSL elite p1 xbox
-{0x08} CSL P1 v2 - FW update required
-{0x09} Maclaren GT3 v1
-{0x0A} clubsport formula v2 / v2.5
-{0x0B} Maclaren GT3 v2
-{0x0C} Podium hub
+{0x06} universal hub hub xbox one   // Works well  
+{0x07} CSL elite p1 xbox            // Doesn't work - says there's a need for FW update 
+{0x08} CSL P1 v2 -                  // Doesn't work - says there's a need for FW update 
+{0x09} Maclaren GT3 v1              // Works ok BUT HAS NO leds in the profile (OLED display doesn't work
+{0x0A} clubsport formula v2 / v2.5  // Buttons doesn't work as uses USB connection and not SPI
+{0x0B} Maclaren GT3 v2              // Buttons doesn't work as uses USB connection and not SPI
+{0x0C} Podium hub                   // Buttons doesn't work as uses USB connection and not SPI
 {0x0D} not supported
 {0x0E} Bentley FWU
 {0x0F} Podium M4 GT3

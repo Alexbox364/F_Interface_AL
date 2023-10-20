@@ -77,7 +77,7 @@ struct fanatec_data_in_t {
 };
 
 // TM1637 inversion Char lookup table from binary to ascii character
-PROGMEM const unsigned char _7_to_ASCII_table[256] = {
+unsigned char _7_to_ASCII_table[256] = {
     32,
     126,
     96,

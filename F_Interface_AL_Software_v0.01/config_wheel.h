@@ -1,5 +1,5 @@
-#ifndef config_w.h
-#define config_w.h
+#ifndef config_w_h
+#define config_w_h
 
 /* This file can help you configure your wheel
   You can select which Input / outputs you want to use and to which buttons in Fanatec interface you want to associate them.
@@ -18,17 +18,17 @@
 //      GENERAL CONFIGURATION                                                                       //
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define HAS_BUTTON_GROUP_1      // Activates button group 1 - buttons number 1, 2, 3 and 4 on PCB
+//#define HAS_BUTTON_GROUP_1      // Activates button group 1 - buttons number 1, 2, 3 and 4 on PCB
 #define HAS_BUTTON_GROUP_2      // Activates button group 2 - buttons number 5, 6, 7 and 8 on PCB
 //#define HAS_BUTTON_GROUP_3      // Activates button group 3 - buttons number 9, 10, 11 and 12 on PCB
-#define HAS_BUTTON_GROUP_4      // Activates button group 4 - buttons number 13, 14, 15 and 16 on PCB
+//#define HAS_BUTTON_GROUP_4      // Activates button group 4 - buttons number 13, 14, 15 and 16 on PCB
 
 //#define HAS_DPAD                // Activated Dpad buttons
 #define HAS_FUNKY                // Activated FUNKY switch buttons - center press not functionnal
 
 //#define HAS_RS_1                // Activates rotary switch 1 + buttonbits assignment
-#define HAS_RS_2                // Activates rotary switch 1 + buttonbits assignment
-#define HAS_RS_3                // Activates rotary switch 1 + buttonbits assignment
+//#define HAS_RS_2                // Activates rotary switch 1 + buttonbits assignment
+//#define HAS_RS_3                // Activates rotary switch 1 + buttonbits assignment
 #define HAS_RS_4                // Activates rotary switch 1 + buttonbits assignment
 
 #define HAS_APM_L               // Activates advance paddle module left
@@ -37,10 +37,10 @@
 
 #define HAS_ENC_1               // Activates Encoder 1 + buttonbits assignment
 #define HAS_ENC_2               // Activates Encoder 2 + buttonbits assignment
-#define HAS_ENC_3               // Activates Encoder 3 + buttonbits assignment
+//#define HAS_ENC_3               // Activates Encoder 3 + buttonbits assignment
 
-//define HAS_NPX                 // Activates Neopixels
-//define HAS_TM1637              // Activates TM1637 7 segments display
+#define HAS_NPX                 // Activates Neopixels
+#define HAS_TM1637              // Activates TM1637 7 segments display
 //#define HAS_OLED                // Activates OLED Display
 //#define HAS_TFT                 // Activates LCD TFT Display // Not coded yet. 
 

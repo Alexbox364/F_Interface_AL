@@ -145,7 +145,7 @@ void setup()
 
     // Wheel configuration
     data_out.header = 0xa5;
-    data_out.id = 0x01;
+    data_out.id = 0x12;
 
     // SPI initerrupts configuration
     attachInterrupt(digitalPinToInterrupt(INT_CS_SPI), cableselect, RISING);
@@ -1124,8 +1124,7 @@ void update_rev_LEDS() {
         Serial.println(led9);*/
     
     #endif
-    // Custom code to display LEDS to write by you
-    // Individual LEDS status is accessible via led1 to led 9 booleans
+    // Custom code to display different thing than what's coming from the Fanatec base LEDS instruction is to write by you
 }
 
 ////////////////////////////////////////////////////////
@@ -1141,17 +1140,19 @@ void update_7_segments() {
 
         //_ASCII_table[] lookup table converts 7 segment bytes to the corresponding ASCII character.
         if (BUTTON_DEBUG ==1) Serial.print("Segments : ");
-        if (BUTTON_DEBUG ==1) Serial.print(_7_to_ASCII_table[data_in.disp[0]]);
+        if (BUTTON_DEBUG ==1) Serial.write(_7_to_ASCII_table[data_in.disp[0]]);
         if (BUTTON_DEBUG ==1) Serial.print(" / ");
-        if (BUTTON_DEBUG ==1) Serial.print(_7_to_ASCII_table[data_in.disp[1]]);
+        if (BUTTON_DEBUG ==1) Serial.write(_7_to_ASCII_table[data_in.disp[1]]);
         if (BUTTON_DEBUG ==1) Serial.print(" / ");
-        if (BUTTON_DEBUG ==1) Serial.println(_7_to_ASCII_table[data_in.disp[2]]);
+        if (BUTTON_DEBUG ==1) Serial.write(_7_to_ASCII_table[data_in.disp[2]]);
+        if (BUTTON_DEBUG ==1) Serial.println("");
+        
 
-        data[0] = display.encodeDigit(_7_to_ASCII_table[data_in.disp[0]]);
-        data[1] = display.encodeDigit(_7_to_ASCII_table[data_in.disp[1]]);
-        data[2] = display.encodeDigit(_7_to_ASCII_table[data_in.disp[2]]);
-        data[3] = 0xff;
-        display.setBrightness(0x0f);
+        data[0] = data_in.disp[0];
+        data[1] = data_in.disp[1];
+        data[2] = data_in.disp[2];
+        data[3] = 0x00;
+        display.setBrightness(7,1);     // from 0 (dimmed) to 7 (bright), 1:ON/0:OFF instruction
         display.setSegments(data);
         // Custom code to display segmments to write by you
         // Individual segment ASCII character is accessible via _7_to_ASCII_table[data_in.disp[0]] to _7_to_ASCII_table[data_in.disp[2]]

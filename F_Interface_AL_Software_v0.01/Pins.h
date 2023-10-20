@@ -1,5 +1,5 @@
-#ifndef define pins.h
-#define pins.h
+#ifndef PIN_H
+#define PIN_H
 
 // This file is used to assign pins to peripherals of the wheel
 
@@ -20,7 +20,7 @@
 #define MISO_PIN            12
 #define CLK_PIN             13
 
-#define TM1637_DIO_PIN      A5
+#define TM1637_DIO_PIN      A0
 #define TM1637_CLK_PIN      A4
 
 #define MUX_SIG_PIN         A1
