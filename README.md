@@ -1,5 +1,7 @@
 
 # F_Interface_AL Project v0.06
+##DIY steering wheel and button bow project
+
 You want to build your own DIY Fanatec base compatible Steering Wheel? You're at the right place :-)
 
 Welcome to the F_interface project. 
@@ -48,6 +50,21 @@ BUT, there is a hope to integrate these feature via bluetooth using a Arduino na
 The New F_interface is available in multiple form factors to suit your needs in terms of wheel setup. All board versions were designed using Fritzing, all source files are available in the repo. It is designed to be easily soldered by anyone using as few various components as possible and using only cheap and available components. It’s versatile, in the way you can only solder group of components that interest you for your build, especially if you want more rotary switches or more buttons,…
 
 All details about the board can be found in the F_Interface_HW file. 
+
+On the hardware side, you now have the choice between various versions depending on your needs. They vary in terms of sizes and inputs/output capabilities. They though all use the same base schematic to establish the link with the Fanatec base.
+
+A presentation of the range is available below. The main hardware platform which is described if the original one beeing the FULL_NANO version. 
+
+- A smallest form factor PCB based on an ATMEGA328P microcontroller just to unlock the force feedback for advanced users : ATMEGA328P_NO_HEADER
+- A smallest form factor PCB based on an ATMEGA328P microcontroller just to unlock the force feedback + a few buttons for advanced user : ATMEGA328P_WITH_HEADER
+- A small form factor PCB based on an arduino nano just to unlock the force feedback : NANO_NO_HEADER
+- A small form factor PCB based on an arduino nano just to unlock the force feedback + a few buttons : NANO_WITH_HEADER
+- A small form factor PCB based on an arduino PRO MICRO just to unlock the force feedback + a few buttons : PROMICRO_WITH_HEADER
+- A podium hub form factor PCB based on an arduino nano with full features (buttons, rotary encoder, rotary switches) : FULL_NANO
+- A podium hub form factor PCB based on an arduino PRO MICRO with full features (buttons, rotary encoder, rotary switches) : FULL_PROMICRO
+- A button box wich is not intended to work with a Fanatec wheel base but which is very close in terms of I/Os.
+![image](https://github.com/Alexbox364/F_Interface_AL/assets/17022734/3a3cffeb-f88c-4be3-9b74-080740cbc458)
+
 
 ![image](https://github.com/Alexbox364/F_Interface_AL/assets/17022734/f12a07e1-ef71-4b7d-ae6c-28a475392876)
 
@@ -141,6 +158,9 @@ Bill of Material will vary depending on you project but the full list is here :
 # The Software
 The F_interface software was designed based on Darknao and Ishachar previous work. 
 It handles SPI communication with the base to respect the Fanatec data structure.
+
+It has been build in a versatile way in order to configure your wheel with the input / output you want on your wheel. 
+see config_wheel.h to active / deactivate via #define //#define the various options
 
 # More details
 <img width="612" alt="image" src="https://github.com/Alexbox364/F_Interface_AL/assets/17022734/c9fc6f53-a6ff-4284-ac24-a52525f89764">
