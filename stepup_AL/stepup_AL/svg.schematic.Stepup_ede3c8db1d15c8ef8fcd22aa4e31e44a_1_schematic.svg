@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Fritzing (http://www.fritzing.org/) -->
+
+<svg
+   width="0.309722in"
+   height="0.236283in"
+   y="0in"
+   viewBox="0 0 7.86694 6.0016"
+   x="0in"
+   version="1.2"
+   id="svg7"
+   sodipodi:docname="svg.schematic.Stepup_ede3c8db1d15c8ef8fcd22aa4e31e44a_1_schematic.svg"
+   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs7" />
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="in"
+     inkscape:zoom="35.841554"
+     inkscape:cx="14.857057"
+     inkscape:cy="11.341584"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="schematic" />
+  <desc
+     id="desc1">
+    <referenceFile>spdt-switch.svg</referenceFile>
+  </desc>
+  <g
+     id="schematic"
+     gorn="0.0">
+    <line
+       x1="2.66347"
+       class="other"
+       x2="5.20347"
+       y2="0.4608"
+       stroke-width="0.254"
+       y1="3.0008"
+       stroke-linecap="round"
+       stroke="#000000"
+       id="line1" />
+    <line
+       x1="5.20347"
+       class="other"
+       x2="5.83847"
+       y2="5.5408"
+       stroke-width="0.127"
+       y1="5.5408"
+       stroke-linecap="round"
+       stroke="#000000"
+       id="line2" />
+    <line
+       x1="5.20347"
+       class="other"
+       x2="5.83847"
+       y2="0.4608"
+       stroke-width="0.1524"
+       y1="0.4608"
+       stroke-linecap="round"
+       stroke="#000000"
+       id="line3" />
+    <circle
+       class="other"
+       fill="none"
+       cx="5.20347"
+       r="0.3592"
+       stroke-width="0.2032"
+       cy="0.4608"
+       stroke="#000000"
+       id="circle3" />
+    <circle
+       class="other"
+       fill="none"
+       cx="5.20347"
+       r="0.3592"
+       stroke-width="0.2032"
+       cy="5.5408"
+       stroke="#000000"
+       id="circle4" />
+    <circle
+       class="other"
+       fill="none"
+       cx="2.66347"
+       r="0.3592"
+       stroke-width="0.2032"
+       cy="3.0008"
+       stroke="#000000"
+       id="circle5" />
+    <line
+       x1="0.123472"
+       id="connector1pin"
+       class="pin"
+       gorn="0.0.6"
+       x2="2.66347"
+       y2="3.0008"
+       stroke-width="0.246944"
+       y1="3.0008"
+       stroke-linecap="round"
+       stroke="#787878"
+       connectorname="P" />
+    <line
+       x1="0.15182337"
+       id="connector1pin-3"
+       class="pin"
+       gorn="0.0.6"
+       x2="2.6918213"
+       y2="1.1440916"
+       stroke-width="0.246944"
+       y1="1.1440916"
+       stroke-linecap="round"
+       stroke="#787878"
+       connectorname="P" />
+    <rect
+       width="0.0001"
+       height="0.0001"
+       y="3.0008"
+       id="connector1terminal"
+       class="terminal"
+       fill="none"
+       gorn="0.0.7"
+       stroke-width="0"
+       x="0.123472"
+       stroke="none" />
+    <text
+       font-family="'Droid Sans'"
+       y="2.6303799"
+       class="text"
+       fill="#8c8c8c"
+       stroke-width="0"
+       x="1.39347"
+       text-anchor="middle"
+       font-size="0.881944px"
+       stroke="none"
+       id="text5">IN-</text>
+    <text
+       font-family="'Droid Sans'"
+       y="0.89736962"
+       class="text"
+       fill="#8c8c8c"
+       stroke-width="0"
+       x="1.3641372"
+       text-anchor="middle"
+       font-size="0.881944px"
+       stroke="none"
+       id="text5-7">IN+</text>
+    <line
+       x1="7.74347"
+       id="connector2pin"
+       class="pin"
+       gorn="0.0.9"
+       x2="5.20347"
+       y2="5.5408"
+       stroke-width="0.246944"
+       y1="5.5408"
+       stroke-linecap="round"
+       stroke="#787878"
+       connectorname="S" />
+    <rect
+       width="0.0001"
+       height="0.0001"
+       y="5.5408"
+       id="connector2terminal"
+       class="terminal"
+       fill="none"
+       gorn="0.0.10"
+       stroke-width="0"
+       x="7.74347"
+       stroke="none" />
+    <text
+       font-family="'Droid Sans'"
+       y="5.1703801"
+       class="text"
+       fill="#8c8c8c"
+       stroke-width="0"
+       x="6.4734702"
+       text-anchor="middle"
+       font-size="0.881944px"
+       stroke="none"
+       id="text6">OUT-</text>
+    <line
+       x1="7.74347"
+       id="connector0pin"
+       class="pin"
+       gorn="0.0.12"
+       x2="5.20347"
+       y2="0.4608"
+       stroke-width="0.246944"
+       y1="0.4608"
+       stroke-linecap="round"
+       stroke="#787878"
+       connectorname="O" />
+    <rect
+       width="0.0001"
+       height="0.0001"
+       y="0.4608"
+       id="connector0terminal"
+       class="terminal"
+       fill="none"
+       gorn="0.0.13"
+       stroke-width="0"
+       x="7.74347"
+       stroke="none" />
+    <text
+       font-family="'Droid Sans'"
+       y="1.50384"
+       class="text"
+       fill="#8c8c8c"
+       stroke-width="0"
+       x="6.4734702"
+       text-anchor="middle"
+       font-size="0.881944px"
+       stroke="none"
+       id="text7">OUT+</text>
+  </g>
+</svg>

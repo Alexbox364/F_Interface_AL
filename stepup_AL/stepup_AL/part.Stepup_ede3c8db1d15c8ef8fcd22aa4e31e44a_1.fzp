@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<module moduleId="Stepup_ede3c8db1d15c8ef8fcd22aa4e31e44a_1" referenceFile="basic-toggle-switch.fzp" fritzingVersion="0.1.1255">
+ <version>4</version>
+ <author>Jenny</author>
+ <title>Toggle Switch</title>
+ <label>S</label>
+ <date>Tue Nov 14 2023</date>
+ <tags>
+  <tag>switch</tag>
+  <tag>fritzing core</tag>
+ </tags>
+ <properties>
+  <property name="family">switch - 3 pin</property>
+  <property name="switching circuit">SPDT</property>
+  <property name="package">THT</property>
+  <property name="switch status">Released</property>
+  <property name="contact resistance">0.1Ω</property>
+  <property name="mpn"></property>
+  <property name="part number"></property>
+  <property name="layer"></property>
+  <property name="mn"></property>
+  <property name="variant">variant 1</property>
+ </properties>
+ <description>Toggle Switch</description>
+ <spice>
+  <line>R{instanceTitle} {net connector0} {net connector1} {contact resistance}</line>
+ </spice>
+ <views>
+  <iconView>
+   <layers image="icon/Stepup_ede3c8db1d15c8ef8fcd22aa4e31e44a_1_icon.svg">
+    <layer layerId="icon"/>
+   </layers>
+  </iconView>
+  <breadboardView>
+   <layers image="breadboard/Stepup_ede3c8db1d15c8ef8fcd22aa4e31e44a_1_breadboard.svg">
+    <layer layerId="breadboard"/>
+   </layers>
+  </breadboardView>
+  <schematicView flipvertical="true" fliphorizontal="true">
+   <layers image="schematic/Stepup_ede3c8db1d15c8ef8fcd22aa4e31e44a_1_schematic.svg">
+    <layer layerId="schematic"/>
+   </layers>
+  </schematicView>
+  <pcbView>
+   <layers image="pcb/Stepup_ede3c8db1d15c8ef8fcd22aa4e31e44a_1_pcb.svg">
+    <layer layerId="copper0"/>
+    <layer layerId="silkscreen"/>
+    <layer layerId="copper1"/>
+   </layers>
+  </pcbView>
+ </views>
+ <connectors>
+  <connector id="connector0" name="L1" type="male">
+   <description>L1</description>
+   <views>
+    <breadboardView>
+     <p svgId="connector0pin" layer="breadboard" terminalId="connector0terminal"/>
+    </breadboardView>
+    <schematicView>
+     <p svgId="connector0pin" layer="schematic" terminalId="connector0terminal"/>
+    </schematicView>
+    <pcbView>
+     <p svgId="connector0pin" layer="copper0"/>
+     <p svgId="connector0pin" layer="copper1"/>
+    </pcbView>
+   </views>
+  </connector>
+  <connector id="connector1" name="COM" type="male">
+   <description>COM</description>
+   <views>
+    <breadboardView>
+     <p svgId="connector1pin" layer="breadboard" terminalId="connector1terminal"/>
+    </breadboardView>
+    <schematicView>
+     <p svgId="connector1pin" layer="schematic" terminalId="connector1terminal"/>
+    </schematicView>
+    <pcbView>
+     <p svgId="connector1pin" layer="copper0"/>
+     <p svgId="connector1pin" layer="copper1"/>
+    </pcbView>
+   </views>
+  </connector>
+  <connector id="connector2" name="L2" type="male">
+   <description>L2</description>
+   <views>
+    <breadboardView>
+     <p svgId="connector2pin" layer="breadboard" terminalId="connector2terminal"/>
+    </breadboardView>
+    <schematicView>
+     <p svgId="connector2pin" layer="schematic" terminalId="connector2terminal"/>
+    </schematicView>
+    <pcbView>
+     <p svgId="connector2pin" layer="copper0"/>
+     <p svgId="connector2pin" layer="copper1"/>
+    </pcbView>
+   </views>
+  </connector>
+ </connectors>
+</module>
