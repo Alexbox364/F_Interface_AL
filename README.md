@@ -1,4 +1,69 @@
-# F_Interface_AL Project v0.02
+
+# F_Interface_AL Project v0.06
+You want to build your own DIY Fanatec base compatible Steering Wheel? You're at the right place :-)
+
+Welcome to the F_interface project. 
+
+Purpose of this project is to bring a versatile platform to build DIY steering wheels intended to work with Fanatec simracing bases. 
+
+![image](https://github.com/Alexbox364/F_Interface_AL/assets/17022734/05ad3eea-12d0-4a2f-92bb-38c1958d1449)
+
+Fanatec ecosystem is great for simracing, but when it comes to integrate custom DIY wheel to enrich your experience, possibilities are limited. 
+
+You can use the Podium hub to hook up a rim and few buttons but you don’t have much more possibilities. 
+
+The F_interface offers you the opportunity to build a custom DIY wheel with a variety of combinations including :
+
+- Up to 24 push buttons
+- Up to 2 rotary encoders
+- Up to 4 rotary switches
+- Advance paddle modules
+- TM1637 segmented displays
+- OLED displays
+- TFT LCD display
+- Individually addressable RGB LEDs
+
+This project brings you both a hardware and software platform to help you build your dream DIY wheel. 
+
+It is build on using the SPI protocol from Fanatec to communicate between the wheel and the base. This way, you don’t need any cable or wireless communication between the wheel and the base, everything goes through the pins in the center of the Fanatec QR system.
+
+This work is based on previous work from [Darknao](https://github.com/darknao/btClubSportWheel) and [Ishachar](https://github.com/lshachar/Arduino_Fanatec_Wheel) who brought public the base of the SPI communication between the Fanatec base and the wheels.
+
+The SPI protocol is not yet fully understood. So what is currently feasible is : 
+- use up to 24 buttons (including D-pad / rotary encoders / rotary switches)  
+- use 2 axis for clutch / brake / acceleration
+- get 9 status LEDs
+- get 7 segment display information
+—> tu sum it up, all features of wheels like Porsche 918 RSR, BMW GT2 v1...
+
+What is currently not possible :
+- get RGB Led information
+- get enriched information displayed en latest OLED displays like lap time, tire pressure,…
+- more buttons 
+—> to sum it up, extended features brought by Maclaren GT3 v2 wheel, formula v2.5, Porsche endurance are not accessible yet, unless we better understand SPI protocol used by these wheels and by the data port.
+BUT, there is a hope to integrate these feature via bluetooth using a Arduino nano ESP 32 and Simhub in future development to integrate TFT LCD screens, if your project really needs it. 
+
+
+# The Hardware
+The New F_interface is available in multiple form factors to suit your needs in terms of wheel setup. All board versions were designed using Fritzing, all source files are available in the repo. It is designed to be easily soldered by anyone using as few various components as possible and using only cheap and available components. It’s versatile, in the way you can only solder group of components that interest you for your build, especially if you want more rotary switches or more buttons,…
+
+All details about the board can be found in the F_Interface_HW file. 
+
+![image](https://github.com/Alexbox364/F_Interface_AL/assets/17022734/f12a07e1-ef71-4b7d-ae6c-28a475392876)
+
+![image](https://github.com/Alexbox364/F_Interface_AL/assets/17022734/89bfb240-84ee-4d4c-89a4-aa0e77400f30)
+
+![image](https://github.com/Alexbox364/F_Interface_AL/assets/17022734/780d1046-e766-4f7a-a386-a11db42bdd44)
+
+![image](https://github.com/Alexbox364/F_Interface_AL/assets/17022734/5a700041-33e2-458d-90e8-8f59c6465f52)
+
+![image](https://github.com/Alexbox364/F_Interface_AL/assets/17022734/db05a0d0-50b5-450f-8606-36714938fa43)
+
+![image](https://github.com/Alexbox364/F_Interface_AL/assets/17022734/e76fd763-71e5-464b-bcad-9219753a48e5)
+
+![image](https://github.com/Alexbox364/F_Interface_AL/assets/17022734/07957c85-cdcc-4949-8595-0379a224bebf)
+
+# Old presentation for legacy : F_Interface_AL Project v0.02
 
 You want to build your own DIY Fanatec base compatible Steering Wheel? You're at the right place :-)
 
