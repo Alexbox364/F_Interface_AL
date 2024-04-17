@@ -80,6 +80,16 @@ A presentation of the range is available below. The main hardware platform which
 
 ![image](https://github.com/Alexbox364/F_Interface_AL/assets/17022734/07957c85-cdcc-4949-8595-0379a224bebf)
 
+# Force feedback unlocker
+
+Work from user Lele1494 is shared in the repo in the folder FFB unlocker_Lele1494.
+
+It features a Fanatec force feedback unlocker in the shape of a small dongle. 
+
+![311509914-fe021610-d0ed-4bec-9fa5-f2b88aa8f5ab](https://github.com/Alexbox364/F_Interface_AL/assets/17022734/c37d99e1-1686-4526-87cb-87205821473f)
+![313604595-764e521d-4c99-446e-8980-a8b3b699f9a5](https://github.com/Alexbox364/F_Interface_AL/assets/17022734/5995927e-afc0-403b-94de-05d8257cd5ff)
+![313604620-f500a8e4-6ad1-47dd-8eb8-25f93431ef64](https://github.com/Alexbox364/F_Interface_AL/assets/17022734/8aa6c685-336d-41f9-9724-ee9345af024b)
+
 # Old presentation for legacy : F_Interface_AL Project v0.02
 
 You want to build your own DIY Fanatec base compatible Steering Wheel? You're at the right place :-)
