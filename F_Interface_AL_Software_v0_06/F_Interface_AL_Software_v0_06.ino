@@ -79,6 +79,8 @@ void buttonBit_buffer_handling();     // handling of button presses buffer, most
 unsigned long lastButtonPress;
 unsigned long lastPoll;
 
+bool crc8Stat;
+
 Adafruit_MCP23X17 mcp;
 
 uint8_t encoder_plus = 0b00000001;
@@ -365,7 +367,7 @@ void loop() {
   calcOutgoingCrc();
   //yield_F();
   
-  bool crc8Stat = checkIncomingCrc();
+  crc8Stat = checkIncomingCrc();
   yield_F();
   
   // For debug purposes : 
